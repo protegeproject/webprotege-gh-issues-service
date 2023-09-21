@@ -1,0 +1,50 @@
+options {
+    STATIC = false;
+}
+
+PARSER_BEGIN(IssueTextParser)
+
+package edu.stanford.protege.issues.service;
+
+import java.io.*;
+import java.util.*;
+
+public class IssueTextParser {
+
+    public static void main(String[] args) throws ParseException {
+    }
+}
+
+PARSER_END(IssueTextParser)
+
+TOKEN: {
+    <OBOID: (["A"-"Z","a"-"z","0"-"9"])+":"(["0"-"9"])+>
+}
+
+TOKEN : {
+    <URL: (("http://" | "https://") (["a"-"z", "A"-"Z", "0"-"9", "/", ":", "%", "?", "=", "&", "_", "-", "~", "+", "#"]|"."~[])+) >
+}
+
+TOKEN : {
+   <PUNCTUATION: ([".", ",", ";", ":", "!", "?", "(", ")", "{", "}", "[", "]", "<", ">", "'", "\""])+ >
+}
+
+TOKEN : {
+   <OTHER: (~[]) >
+}
+
+void parse(IssueTextParserHandler handler) : {}
+{
+ (
+    <URL> {
+        handler.handleUrl(token.image);
+    }
+    |
+    <OBOID> {
+            handler.handleOboId(token.image);
+    }
+    |
+    <PUNCTUATION>
+    |
+    <OTHER>)*
+}

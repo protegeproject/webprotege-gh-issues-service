@@ -6,76 +6,67 @@ import edu.stanford.protege.issues.shared.GitHubIssue;
 import edu.stanford.protege.webprotege.common.ProjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class GitHubIssueTranslatorTest {
 
-    protected static final String ISSUE_TITLE = "Issue Title";
+    private static final String NODE_ID = "TheNodeId";
 
-    protected static final String ISSUE_BODY = "Issue Body";
+    private final OboId oboId = OboId.valueOf("GO:1234567");
+
+    private final Iri iri = Iri.valueOf("http://example.org/A");
+
+    @Mock
+    private ProjectId projectId;
+
+    @Mock
+    private GitHubIssue issue;
+
+    @Mock
+    private TermIdExtractor termIdExtractor;
 
     private GitHubIssueTranslator translator;
 
-    private TermIdExtractor termIdExtractor;
-
     @BeforeEach
     public void setUp() {
-        termIdExtractor = mock(TermIdExtractor.class);
         translator = new GitHubIssueTranslator(termIdExtractor);
     }
 
     @Test
-    public void getIssueRecord_ReturnsIssueRecordWithCorrectValues() {
-        // Arrange
-        var issue = mock(GitHubIssue.class);
-        when(issue.title()).thenReturn(ISSUE_TITLE);
-        when(issue.body()).thenReturn(ISSUE_BODY);
+    public void shouldReturnIssueRecord() {
+        when(issue.nodeId()).thenReturn(NODE_ID);
 
-        var projectId = mock(ProjectId.class);
+        when(termIdExtractor.extractTermIds(anyString()))
+                .thenReturn(new TermIdExtractor.ExtractedTermIds(Set.of(oboId),
+                                                                 Set.of(iri)));
 
-        // Mock the behavior of the TermIdExtractor
-        var oboIdMentions = new LinkedHashSet<String>();
-        oboIdMentions.add("OBO:123");
-        var iriMentions = new LinkedHashSet<String>();
-        iriMentions.add("http://example.com/iri");
-
-        doAnswer(inv -> {
-            Set<String> oboIds = inv.getArgument(1);
-            Set<String> iris = inv.getArgument(2);
-            oboIds.addAll(oboIdMentions);
-            iris.addAll(iriMentions);
-            return null;
-        }).when(termIdExtractor).extractMentionedTermIds(anyString(), anySet(), anySet());
-
-
-        // Act
         var issueRecord = translator.getIssueRecord(issue, projectId);
 
-        // Assert
         assertThat(issueRecord.projectId()).isEqualTo(projectId);
         assertThat(issueRecord.issue()).isEqualTo(issue);
-        assertThat(issueRecord.oboIds()).containsExactly(new OboId("OBO:123"));
-        assertThat(issueRecord.iris()).containsExactly(new Iri("http://example.com/iri"));
+        assertThat(issueRecord.oboIds()).containsExactly(oboId);
+        assertThat(issueRecord.iris()).containsExactly(iri);
+        assertThat(issueRecord.issueNodeId()).isEqualTo(NODE_ID);
     }
 
     @Test
-    public void getIssueRecord_ThrowsNullPointerException_WhenIssueIsNull() {
+    public void shouldThrowNpeWithNullIssue() {
         var projectId = mock(ProjectId.class);
         assertThrows(NullPointerException.class, () -> translator.getIssueRecord(null, projectId));
     }
 
     @Test
-    public void getIssueRecord_ThrowsNullPointerException_WhenProjectIdIsNull() {
-        var mockIssue = mock(GitHubIssue.class);
-        assertThrows(NullPointerException.class, () -> translator.getIssueRecord(mockIssue, null));
+    public void shouldThrowNpeWithNullProjectId() {
+        assertThrows(NullPointerException.class, () -> translator.getIssueRecord(issue, null));
     }
 }
 

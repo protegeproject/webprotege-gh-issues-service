@@ -2,8 +2,6 @@ package edu.stanford.protege.issues.service;
 
 import edu.stanford.protege.issues.shared.GitHubIssue;
 import edu.stanford.protege.webprotege.common.ProjectId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
@@ -31,11 +29,11 @@ public class GitHubIssueTranslator {
     }
 
     /**
-     * Translates a GitHubIssue into an {@link IssueRecord} object.
+     * Translates a GitHubIssue into an {@link IssueRecord}.
      * <p>
      * This method extracts term mentions from the issue's title and body using a
      * {@link TermIdExtractor} and constructs an {@link IssueRecord} containing
-     * the project ID, GitHubIssue, OBO IDs, and IRIs based on the mentions.
+     * the project ID, GitHubIssue, OBO IDs, and IRIs based on the extracted Term IDs.
      * </p>
      *
      * @param issue The GitHub issue to be translated. It should not be {@code null}.
@@ -53,13 +51,8 @@ public class GitHubIssueTranslator {
 
         var combinedText = issue.title() + "  " + issue.body();
 
-        var oboIdMentions = new LinkedHashSet<String>();
-        var iriMentions = new LinkedHashSet<String>();
-        termIdExtractor.extractMentionedTermIds(combinedText, oboIdMentions, iriMentions);
-
-        var oboIds = oboIdMentions.stream().map(OboId::new).collect(Collectors.toSet());
-        var iris = iriMentions.stream().map(Iri::new).collect(Collectors.toSet());
-        return IssueRecord.of(projectId, issue, oboIds, iris);
+        var extractedIds = termIdExtractor.extractTermIds(combinedText);
+        return IssueRecord.of(projectId, issue, extractedIds.extractedOboIds(), extractedIds.extractedIris());
     }
 
 

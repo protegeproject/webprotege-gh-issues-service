@@ -45,7 +45,7 @@ public class IssueRecordTest {
         var issueRecord = new IssueRecord(NODE_ID, projectId, issue, oboIds, iris);
 
         assertThat(issueRecord).isNotNull();
-        assertThat(issueRecord.issueNodeId()).isEqualTo(NODE_ID);
+        assertThat(issueRecord.nodeId()).isEqualTo(NODE_ID);
         assertThat(issueRecord.projectId()).isEqualTo(projectId);
         assertThat(issueRecord.issue()).isEqualTo(issue);
         assertThat(issueRecord.oboIds()).isEqualTo(oboIds);
@@ -66,7 +66,7 @@ public class IssueRecordTest {
         var issueRecord = IssueRecord.of(projectId, issue, oboIds, iris);
 
         assertThat(issueRecord).isNotNull();
-        assertThat(issueRecord.issueNodeId()).isEqualTo(NODE_ID);
+        assertThat(issueRecord.nodeId()).isEqualTo(NODE_ID);
         assertThat(issueRecord.projectId()).isEqualTo(projectId);
         assertThat(issueRecord.issue()).isEqualTo(issue);
         assertThat(issueRecord.oboIds()).isEqualTo(oboIds);
@@ -82,7 +82,7 @@ public class IssueRecordTest {
     public void shouldDeserializeJson() throws IOException {
         var inputStream = IssueRecordTest.class.getResourceAsStream("/IssueRecord.json");
         var issueRecord = tester.readObject(inputStream);
-        assertThat(issueRecord.issueNodeId()).isEqualTo(NODE_ID);
+        assertThat(issueRecord.nodeId()).isEqualTo(NODE_ID);
         assertThat(issueRecord.projectId()).isEqualTo(ProjectId.valueOf("11111111-2222-3333-4444-555555555555"));
         assertThat(issueRecord.iris()).containsExactly(Iri.valueOf("https://example.org/A"));
         assertThat(issueRecord.oboIds()).containsExactly(OboId.valueOf("GO:1234567"));

@@ -55,7 +55,7 @@ public class GitHubIssueTranslatorTest {
         assertThat(issueRecord.issue()).isEqualTo(issue);
         assertThat(issueRecord.oboIds()).containsExactly(oboId);
         assertThat(issueRecord.iris()).containsExactly(iri);
-        assertThat(issueRecord.issueNodeId()).isEqualTo(NODE_ID);
+        assertThat(issueRecord.nodeId()).isEqualTo(NODE_ID);
     }
 
     @Test

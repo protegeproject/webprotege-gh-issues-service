@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.stanford.protege.issues.shared.GitHubIssue;
 import edu.stanford.protege.webprotege.common.ProjectId;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLEntity;
 import org.springframework.data.annotation.Id;
 
 import javax.annotation.Nonnull;
@@ -17,24 +15,24 @@ import java.util.Set;
  * Stanford Center for Biomedical Informatics Research
  * 2023-09-21
  */
-public record IssueRecord(@JsonProperty("_id") @Id String issueNodeId,
+public record IssueRecord(@JsonProperty("_id") @Id String nodeId,
                           @JsonProperty("projectId") @Nonnull ProjectId projectId,
                           @JsonProperty("issue") @Nonnull GitHubIssue issue,
                           @JsonProperty("oboIds") @Nonnull Set<OboId> oboIds,
                           @JsonProperty("iris") @Nonnull Set<Iri> iris) {
 
-    public IssueRecord(@JsonProperty("_id") String issueNodeId,
+    public IssueRecord(@JsonProperty("_id") String nodeId,
                        @JsonProperty("projectId") @Nonnull ProjectId projectId,
                        @JsonProperty("issue") @Nonnull GitHubIssue issue,
                        @JsonProperty("oboIds") @Nonnull Set<OboId> oboIds,
                        @JsonProperty("iris") @Nonnull Set<Iri> iris) {
-        this.issueNodeId = Objects.requireNonNull(issueNodeId);
+        this.nodeId = Objects.requireNonNull(nodeId);
         this.projectId = Objects.requireNonNull(projectId);
         this.issue = Objects.requireNonNull(issue);
         this.oboIds = Objects.requireNonNull(oboIds);
         this.iris = Objects.requireNonNull(iris);
-        if(!issueNodeId.equals(issue.nodeId())) {
-            throw new IllegalArgumentException("issueNodeId and issue.nodeId must be equal");
+        if(!nodeId.equals(issue.nodeId())) {
+            throw new IllegalArgumentException("nodeId and issue.nodeId must be equal");
         }
     }
 

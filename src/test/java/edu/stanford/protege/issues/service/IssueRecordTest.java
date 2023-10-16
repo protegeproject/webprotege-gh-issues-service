@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -86,5 +87,22 @@ public class IssueRecordTest {
         assertThat(issueRecord.projectId()).isEqualTo(ProjectId.valueOf("11111111-2222-3333-4444-555555555555"));
         assertThat(issueRecord.iris()).containsExactly(Iri.valueOf("https://example.org/A"));
         assertThat(issueRecord.oboIds()).containsExactly(OboId.valueOf("GO:1234567"));
+    }
+
+    @Test
+    void shouldRoundTrip() throws IOException {
+        var inputStream = IssueRecordTest.class.getResourceAsStream("/IssueRecord.json");
+        var issueRecord = tester.readObject(inputStream);
+        var written = tester.write(issueRecord);
+        var read = tester.readObject(new StringReader(written.getJson()));
+        assertThat(issueRecord).isEqualTo(read);
+    }
+
+    @Test
+    void shouldBeEqual() {
+        when(issue.nodeId()).thenReturn(NODE_ID);
+        var issueRecordA = new IssueRecord(NODE_ID, projectId, issue, Set.of(), Set.of());
+        var issueRecordB = new IssueRecord(NODE_ID, projectId, issue, Set.of(), Set.of());
+        assertThat(issueRecordA).isEqualTo(issueRecordB);
     }
 }

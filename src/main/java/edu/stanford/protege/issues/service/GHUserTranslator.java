@@ -6,8 +6,10 @@ import org.kohsuke.github.GHUser;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Optional;
 
 /**
  * Matthew Horridge
@@ -18,8 +20,11 @@ import java.io.UncheckedIOException;
 public class GHUserTranslator {
 
     @Nonnull
-    public GitHubUser translate(@Nonnull GHUser user) {
-        return GitHubUser.get(
+    public Optional<GitHubUser> translate(@Nullable GHUser user) {
+        if(user == null) {
+            return Optional.empty();
+        }
+        var translated = GitHubUser.get(
                 user.getLogin(),
                 user.getId(),
                 user.getNodeId(),
@@ -29,6 +34,7 @@ public class GHUserTranslator {
                 GitHubUserType.get(getType(user)),
                 isSiteAdmin(user)
         );
+        return Optional.of(translated);
     }
 
     private static boolean isSiteAdmin(GHUser user) {

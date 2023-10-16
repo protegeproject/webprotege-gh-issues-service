@@ -1,5 +1,6 @@
 package edu.stanford.protege.issues.service;
 
+import edu.stanford.protege.issues.shared.GitHubUser;
 import edu.stanford.protege.issues.shared.GitHubUserType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,13 +40,13 @@ class GHUserTranslatorTest {
     @Test
     void shouldTranslateUser() {
         var translation = translator.translate(user);
-        assertThat(translation.id()).isEqualTo(ID);
-        assertThat(translation.login()).isEqualTo(LOGIN);
-        assertThat(translation.url()).isEqualTo(URL);
-        assertThat(translation.htmlUrl()).isEqualTo(HTML_URL);
-        assertThat(translation.nodeId()).isEqualTo(TEST_NODE_ID);
-        assertThat(translation.type()).isEqualTo(GitHubUserType.ORGANIZATION);
-        assertThat(translation.siteAdmin()).isTrue();
+        assertThat(translation).map(GitHubUser::id).contains(ID);
+        assertThat(translation).map(GitHubUser::login).contains(LOGIN);
+        assertThat(translation).map(GitHubUser::url).contains(URL);
+        assertThat(translation).map(GitHubUser::htmlUrl).contains(HTML_URL);
+        assertThat(translation).map(GitHubUser::nodeId).contains(TEST_NODE_ID);
+        assertThat(translation).map(GitHubUser::type).contains(GitHubUserType.ORGANIZATION);
+        assertThat(translation).map(GitHubUser::siteAdmin).hasValue(true);
     }
 
 

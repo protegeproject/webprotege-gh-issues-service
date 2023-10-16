@@ -9,7 +9,9 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Matthew Horridge
@@ -43,19 +45,19 @@ public class GHIssueTranslator {
                 issue.getNodeId(),
                 issue.getNumber(),
                 issue.getTitle(),
-                getUser(issue),
+                getUser(issue).orElse(null),
                 getLabels(issue),
                 issue.getHtmlUrl().toString(),
                 getState(issue),
                 issue.isLocked(),
-                getAssignee(issue),
+                getAssignee(issue).orElse(null),
                 getAssignees(issue),
-                milestoneTranslator.translate(issue.getMilestone()),
+                milestoneTranslator.translate(issue.getMilestone()).orElse(null),
                 issue.getCommentsCount(),
                 getCreatedAt(issue),
                 getUpdatedAt(issue),
                 getClosedAt(issue),
-                getClosedBy(issue),
+                getClosedBy(issue).orElse(null),
                 GitHubAuthorAssociation.NONE,
                 "",
                 issue.getBody(),
@@ -72,12 +74,12 @@ public class GHIssueTranslator {
     }
 
     private static Instant getClosedAt(GHIssue issue) {
-        return issue.getClosedAt().toInstant();
+        return Optional.ofNullable(issue.getClosedAt()).map(Date::toInstant).orElse(null);
     }
 
     private static Instant getUpdatedAt(GHIssue issue) {
         try {
-            return issue.getUpdatedAt().toInstant();
+            return Optional.ofNullable(issue.getUpdatedAt()).map(Date::toInstant).orElse(null);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -85,13 +87,13 @@ public class GHIssueTranslator {
 
     private static Instant getCreatedAt(GHIssue issue) {
         try {
-            return issue.getCreatedAt().toInstant();
+            return Optional.ofNullable(issue.getCreatedAt()).map(Date::toInstant).orElse(null);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    private GitHubUser getClosedBy(GHIssue issue) {
+    private Optional<GitHubUser> getClosedBy(GHIssue issue) {
         try {
             return userTranslator.translate(issue.getClosedBy());
         } catch (IOException e) {
@@ -114,7 +116,7 @@ public class GHIssueTranslator {
         return issue.getLabels().stream().map(labelTranslator::translate).toList();
     }
 
-    private GitHubUser getAssignee(GHIssue issue) {
+    private Optional<GitHubUser> getAssignee(GHIssue issue) {
         try {
             return userTranslator.translate(issue.getAssignee());
         } catch (IOException e) {
@@ -123,10 +125,10 @@ public class GHIssueTranslator {
     }
 
     private List<GitHubUser> getAssignees(GHIssue issue) {
-        return issue.getAssignees().stream().map(userTranslator::translate).toList();
+        return issue.getAssignees().stream().map(userTranslator::translate).filter(Optional::isPresent).map(Optional::get).toList();
     }
 
-    private GitHubUser getUser(GHIssue issue) {
+    private Optional<GitHubUser> getUser(GHIssue issue) {
         try {
             return userTranslator.translate(issue.getUser());
         } catch (IOException e) {

@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.URL;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -72,92 +73,98 @@ class GHMilestoneTranslatorTest {
     }
 
     @Test
+    void shouldTranslateNull() {
+        var translated = translator.translate(null);
+        assertThat(translated).isEmpty();
+    }
+
+    @Test
     void shouldTranslateId() {
         var translated = translator.translate(milestone);
-        assertThat(translated.id()).isEqualTo(ID);
+        assertThat(translated).map(GitHubMilestone::id).contains(ID);
     }
 
     @Test
     void shouldTranslateUrl() {
         var translated = translator.translate(milestone);
-        assertThat(translated.url()).isEqualTo(URL);
+        assertThat(translated).map(GitHubMilestone::url).contains(URL);
     }
 
     @Test
     void shouldTranslateNodeId() {
         var translated = translator.translate(milestone);
-        assertThat(translated.nodeId()).isEqualTo(NODE_ID);
+        assertThat(translated).map(GitHubMilestone::nodeId).contains(NODE_ID);
     }
 
     @Test
     void shouldTranslateNumber() {
         var translated = translator.translate(milestone);
-        assertThat(translated.number()).isEqualTo(NUMBER);
+        assertThat(translated).map(GitHubMilestone::number).contains(NUMBER);
     }
 
     @Test
     void shouldTranslateTitle() {
         var translated = translator.translate(milestone);
-        assertThat(translated.title()).isEqualTo(TITLE);
+        assertThat(translated).map(GitHubMilestone::title).contains(TITLE);
     }
 
     @Test
     void shouldTranslateDescription() {
         var translated = translator.translate(milestone);
-        assertThat(translated.description()).isEqualTo(DESCRIPTION);
+        assertThat(translated).map(GitHubMilestone::description).contains(DESCRIPTION);
     }
 
 
     @Test
     void shouldTranslateCreator() {
-        when(userTranslator.translate(creator)).thenReturn(translatedCreator);
+        when(userTranslator.translate(creator)).thenReturn(Optional.of(translatedCreator));
         var translated = translator.translate(milestone);
-        assertThat(translated.creator()).isEqualTo(translatedCreator);
+        assertThat(translated).map(GitHubMilestone::creator).contains(translatedCreator);
     }
 
 
     @Test
     void shouldTranslateOpenIssues() {
         var translated = translator.translate(milestone);
-        assertThat(translated.openIssues()).isEqualTo(OPEN_ISSUES);
+        assertThat(translated).map(GitHubMilestone::openIssues).contains(OPEN_ISSUES);
     }
 
     @Test
     void shouldTranslateClosedIssues() {
         var translated = translator.translate(milestone);
-        assertThat(translated.closedIssues()).isEqualTo(CLOSED_ISSUES);
+        assertThat(translated).map(GitHubMilestone::closedIssues).contains(CLOSED_ISSUES);
     }
 
     @Test
     void shouldTranslateState() {
         var translated = translator.translate(milestone);
-        assertThat(translated.state()).isEqualTo(GitHubState.OPEN);
+        assertThat(translated).map(GitHubMilestone::state).contains(GitHubState.OPEN);
     }
 
     @Test
     void shouldTranslateCreatedAt() {
         var translated = translator.translate(milestone);
-        assertThat(translated.createdAt()).isEqualTo(CREATED_AT);
+        assertThat(translated).map(GitHubMilestone::createdAt).contains(CREATED_AT);
     }
 
     @Test
     void shouldTranslateUpdatedAt() {
         var translated = translator.translate(milestone);
-        assertThat(translated.updatedAt()).isEqualTo(UPDATED_AT);
+        assertThat(translated).map(GitHubMilestone::updatedAt).contains(UPDATED_AT);
     }
 
 
     @Test
     void shouldTranslateClosedAt() {
         var translated = translator.translate(milestone);
-        assertThat(translated.closedAt()).isEqualTo(CLOSED_AT);
+        assertThat(translated).map(GitHubMilestone::closedAt).contains(CLOSED_AT);
     }
 
 
     @Test
     void shouldTranslateDueOn() {
         var translated = translator.translate(milestone);
-        assertThat(translated.dueOn()).isEqualTo(DUE_ON);
+        assertThat(translated).map(GitHubMilestone::dueOn).contains(DUE_ON);
     }
 
     private class GHMilestoneStub extends GHMilestone {

@@ -7,9 +7,12 @@ import org.kohsuke.github.GHMilestone;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.time.Instant;
+import java.util.Date;
+import java.util.Optional;
 
 /**
  * Matthew Horridge
@@ -26,24 +29,28 @@ public class GHMilestoneTranslator {
     }
 
     @Nonnull
-    public GitHubMilestone translate(@Nonnull GHMilestone milestone) {
-        return GitHubMilestone.get(
+    public Optional<GitHubMilestone> translate(@Nullable GHMilestone milestone) {
+        if(milestone ==  null) {
+            return Optional.empty();
+        }
+        var translated = GitHubMilestone.get(
                 milestone.getUrl().toString(),
                 milestone.getId(),
                 milestone.getNodeId(),
                 milestone.getNumber(),
                 milestone.getTitle(),
                 milestone.getDescription(),
-                getCreator(milestone),
+                getCreator(milestone).orElse(null),
                 milestone.getOpenIssues(),
                 milestone.getClosedIssues(), getState(milestone), getCreatedAt(milestone), getUpdatedAt(milestone),
                 milestone.getDueOn().toInstant(), getClosedAt(milestone)
         );
+        return Optional.of(translated);
     }
 
     private static Instant getClosedAt(GHMilestone milestone) {
         try {
-            return milestone.getClosedAt().toInstant();
+            return Optional.ofNullable(milestone.getClosedAt()).map(Date::toInstant).orElse(null);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -51,7 +58,7 @@ public class GHMilestoneTranslator {
 
     private static Instant getUpdatedAt(GHMilestone milestone) {
         try {
-            return milestone.getUpdatedAt().toInstant();
+            return Optional.ofNullable(milestone.getUpdatedAt()).map(Date::toInstant).orElse(null);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -59,7 +66,7 @@ public class GHMilestoneTranslator {
 
     private static Instant getCreatedAt(GHMilestone milestone) {
         try {
-            return milestone.getCreatedAt().toInstant();
+            return Optional.ofNullable(milestone.getCreatedAt()).map(Date::toInstant).orElse(null);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -72,7 +79,7 @@ public class GHMilestoneTranslator {
         };
     }
 
-    private GitHubUser getCreator(GHMilestone milestone) {
+    private Optional<GitHubUser> getCreator(GHMilestone milestone) {
         try {
             return userTranslator.translate(milestone.getCreator());
         } catch (IOException e) {

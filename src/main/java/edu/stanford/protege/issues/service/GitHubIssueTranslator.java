@@ -37,22 +37,22 @@ public class GitHubIssueTranslator {
      * </p>
      *
      * @param issue The GitHub issue to be translated. It should not be {@code null}.
-     * @param projectId The project ID associated with the GitHub issue. It should not be {@code null}.
+     * @param repoCoords The project ID associated with the GitHub issue. It should not be {@code null}.
      * @return An {@link IssueRecord} representing the translated GitHub issue.
      *
      * @throws NullPointerException if {@code issue} or {@code projectId} is {@code null}.
      */
     @Nonnull
     public IssueRecord getIssueRecord(@Nonnull GitHubIssue issue,
-                                      @Nonnull ProjectId projectId) {
+                                      @Nonnull GitHubRepositoryCoordinates repoCoords) {
 
         Objects.requireNonNull(issue);
-        Objects.requireNonNull(projectId);
+        Objects.requireNonNull(repoCoords);
 
         var combinedText = issue.title() + "  " + issue.body();
 
         var extractedIds = termIdExtractor.extractTermIds(combinedText);
-        return IssueRecord.of(projectId, issue, extractedIds.extractedOboIds(), extractedIds.extractedIris());
+        return IssueRecord.of(issue, repoCoords, extractedIds.extractedOboIds(), extractedIds.extractedIris());
     }
 
 

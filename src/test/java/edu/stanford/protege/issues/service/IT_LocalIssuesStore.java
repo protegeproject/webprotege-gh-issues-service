@@ -1,7 +1,7 @@
 package edu.stanford.protege.issues.service;
 
 import edu.stanford.protege.issues.shared.*;
-import edu.stanford.protege.webprotege.common.ProjectId;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.Set;
 
@@ -23,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SpringBootTest
 @ExtendWith(MongoTestExtension.class)
-public class LocalIssuesStoreTest {
+public class IT_LocalIssuesStore {
 
     protected static final String NODE_ID = "abc123";
 
@@ -32,17 +31,17 @@ public class LocalIssuesStoreTest {
 
     private IssueRecord issueRecord;
 
-    private ProjectId projectId;
-
     private GitHubIssue issue;
 
     private OboId oboId;
 
     private Iri iri;
 
+    private GitHubRepositoryCoordinates repoCoords;
+
     @BeforeEach
     void setUp() {
-        projectId = ProjectId.generate();
+        repoCoords = GitHubRepositoryCoordinates.of("ACME", "R1");
         var now = Instant.now().truncatedTo(ChronoUnit.MILLIS);
         issue = GitHubIssue.get("https://example.org/issues/1",
                                 1,
@@ -68,10 +67,15 @@ public class LocalIssuesStoreTest {
         oboId = OboId.valueOf("ID:1234567");
         iri = Iri.valueOf("http://example.org/A");
         issueRecord = new IssueRecord(NODE_ID,
-                                      projectId,
+                                      GitHubRepositoryCoordinates.of("ACME", "R1"),
                                       issue,
                                       Set.of(oboId),
                                       Set.of(iri));
+    }
+
+    @AfterEach
+    void tearDown() {
+        issueStore.deleteAll();
     }
 
     @Test
@@ -98,35 +102,22 @@ public class LocalIssuesStoreTest {
     }
 
     @Test
-    void shouldFindByProjectId() {
-        issueStore.save(issueRecord);
-        var found = issueStore.findAllByProjectId(projectId);
-        assertThat(found).hasSize(1);
-        assertThat(found).first().hasFieldOrPropertyWithValue("nodeId", NODE_ID);
-    }
-
-    @Test
     void shouldRoundTripRecord() {
         issueStore.save(issueRecord);
         var found = issueStore.findById(NODE_ID);
         assertThat(found).isPresent();
         var foundRecord = found.get();
         assertThat(foundRecord.nodeId()).isEqualTo(NODE_ID);
-        assertThat(foundRecord.projectId()).isEqualTo(projectId);
         assertThat(foundRecord.iris()).containsExactly(iri);
         assertThat(foundRecord.oboIds()).containsExactly(oboId);
         assertThat(foundRecord.issue()).isEqualTo(issue);
     }
 
     @Test
-    void shouldDeleteIssuesWithProjectId() {
+    void shouldDeleteIssuesWithRepoCoords() {
         issueStore.save(issueRecord);
         assertThat(issueStore.count()).isEqualTo(1);
-        // Make sure doesn't delete everything
-        issueStore.deleteAllByProjectId(ProjectId.generate());
-        assertThat(issueStore.count()).isEqualTo(1);
-
-        issueStore.deleteAllByProjectId(projectId);
+        issueStore.deleteAllByRepoCoords(repoCoords);
         assertThat(issueStore.count()).isEqualTo(0);
     }
 
@@ -147,9 +138,9 @@ public class LocalIssuesStoreTest {
     }
 
     @Test
-    void shouldFindByProjectIdAndOboIds() {
+    void shouldFindByRepoCoordsIdAndOboIds() {
         issueStore.save(issueRecord);
-        var found = issueStore.findAllByProjectIdAndOboIds(projectId, oboId);
+        var found = issueStore.findAllByRepoCoordsAndOboIds(repoCoords, oboId);
         assertThat(found).hasSize(1);
         assertThat(found).first().hasFieldOrPropertyWithValue("nodeId", NODE_ID);
     }
@@ -157,7 +148,7 @@ public class LocalIssuesStoreTest {
     @Test
     void shouldFindByProjectIdAndIris() {
         issueStore.save(issueRecord);
-        var found = issueStore.findAllByProjectIdAndIris(projectId, iri);
+        var found = issueStore.findAllByRepoCoordsAndIris(repoCoords, iri);
         assertThat(found).hasSize(1);
         assertThat(found).first().hasFieldOrPropertyWithValue("nodeId", NODE_ID);
     }
@@ -190,8 +181,9 @@ public class LocalIssuesStoreTest {
                 issue.reactions(),
                 issue.stateReason()
         );
-        var nextRecord = IssueRecord.of(issueRecord.projectId(),
+        var nextRecord = IssueRecord.of(
                                          nextIssue,
+                                        repoCoords,
                                         issueRecord.oboIds(),
                                         issueRecord.iris());
         issueStore.save(nextRecord);

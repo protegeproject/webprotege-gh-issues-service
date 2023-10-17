@@ -1,6 +1,7 @@
 package edu.stanford.protege.issues.service;
 
-import edu.stanford.protege.webprotege.common.ProjectId;
+import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SpringBootTest
 @ExtendWith(MongoTestExtension.class)
-public class LocalIssueStoreLoader_IT {
+public class IT_LocalIssueStoreLoader {
 
     @Autowired
     private LocalIssueStore localIssueStore;
@@ -26,22 +27,23 @@ public class LocalIssueStoreLoader_IT {
     @Autowired
     private LocalIssueStoreLoader localIssueStoreLoader;
 
-    private ProjectId projectId;
+    private static GitHubRepositoryCoordinates repoCoords = GitHubRepositoryCoordinates.of("protegeproject", "webprotege-gh-issues-test-repo");
 
     @BeforeEach
-    void setUp() {
-        projectId = ProjectId.generate();
+    public void setUp() throws IOException {
+        localIssueStoreLoader.load(repoCoords);
     }
 
     @Test
-    void shouldLoadIssuesFromGitHubRepository() throws IOException {
-        var repoCoords = GitHubRepositoryCoordinates.of("matthewhorridge", "T1");
-        localIssueStoreLoader.load(projectId,
-                                   repoCoords);
-        var recordsCount = localIssueStore.count();
-        assertThat(recordsCount).isEqualTo(2);
-        localIssueStore.findAll()
-                .forEach(issueRecord -> System.out.println(issueRecord));
+    void shouldLoadIssuesFromGitHubRepository() {
+        assertThat(localIssueStore.count()).isGreaterThan(0);
+    }
+
+    @Test
+    void shouldLoadTestIssue() {
+        assertThat(localIssueStore.findAll())
+                .map(IssueRecord::issue)
+                .anyMatch(issue -> issue.title().equals("Testing Issue #1"));
     }
 }
 

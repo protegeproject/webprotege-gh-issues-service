@@ -16,18 +16,18 @@ import java.util.Set;
  * 2023-09-21
  */
 public record IssueRecord(@JsonProperty("_id") @Id String nodeId,
-                          @JsonProperty("projectId") @Nonnull ProjectId projectId,
+                          @JsonProperty("repoCoords") GitHubRepositoryCoordinates repoCoords,
                           @JsonProperty("issue") @Nonnull GitHubIssue issue,
                           @JsonProperty("oboIds") @Nonnull Set<OboId> oboIds,
                           @JsonProperty("iris") @Nonnull Set<Iri> iris) {
 
     public IssueRecord(@JsonProperty("_id") String nodeId,
-                       @JsonProperty("projectId") @Nonnull ProjectId projectId,
+                       @JsonProperty("repoCoords") GitHubRepositoryCoordinates repoCoords,
                        @JsonProperty("issue") @Nonnull GitHubIssue issue,
                        @JsonProperty("oboIds") @Nonnull Set<OboId> oboIds,
                        @JsonProperty("iris") @Nonnull Set<Iri> iris) {
         this.nodeId = Objects.requireNonNull(nodeId);
-        this.projectId = Objects.requireNonNull(projectId);
+        this.repoCoords = Objects.requireNonNull(repoCoords);
         this.issue = Objects.requireNonNull(issue);
         this.oboIds = Objects.requireNonNull(oboIds);
         this.iris = Objects.requireNonNull(iris);
@@ -37,20 +37,20 @@ public record IssueRecord(@JsonProperty("_id") @Id String nodeId,
     }
 
     @Nonnull
-    public static IssueRecord of(@JsonProperty("projectId") @Nonnull ProjectId projectId,
-                                 @JsonProperty("issue") @Nonnull GitHubIssue issue,
+    public static IssueRecord of(@JsonProperty("issue") @Nonnull GitHubIssue issue,
+                                 @JsonProperty("repoCoords") GitHubRepositoryCoordinates repoCoords,
                                  @JsonProperty("oboIds") @Nonnull Set<OboId> oboIds,
                                  @JsonProperty("iris") @Nonnull Set<Iri> iris) {
-        return new IssueRecord(issue.nodeId(), projectId, issue, oboIds, iris);
+        return new IssueRecord(issue.nodeId(), repoCoords, issue, oboIds, iris);
     }
 
     @JsonCreator
     @Nonnull
     static IssueRecord fromJson(@JsonProperty("_id") String issueNodeId,
-                                          @JsonProperty("projectId") @Nonnull ProjectId projectId,
-                                 @JsonProperty("issue") @Nonnull GitHubIssue issue,
+                                @JsonProperty("repoCoords") GitHubRepositoryCoordinates repoCoords,
+                                @JsonProperty("issue") @Nonnull GitHubIssue issue,
                                  @JsonProperty("oboIds") @Nonnull Set<OboId> oboIds,
                                  @JsonProperty("iris") @Nonnull Set<Iri> iris) {
-        return new IssueRecord(issueNodeId, projectId, issue, oboIds, iris);
+        return new IssueRecord(issueNodeId, repoCoords, issue, oboIds, iris);
     }
 }

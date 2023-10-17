@@ -1,6 +1,9 @@
 {
   "_id" : "MDU6SXNzdWUx",
-  "projectId" : "11111111-2222-3333-4444-555555555555",
+  "repoCoords" : {
+     "ownerName" : "ACME",
+     "repositoryName" : "R1"
+  },
   "oboIds" : ["GO:1234567"],
   "iris" : ["https://example.org/A"],
   "issue" : {

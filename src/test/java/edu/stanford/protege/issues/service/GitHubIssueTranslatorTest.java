@@ -26,7 +26,7 @@ public class GitHubIssueTranslatorTest {
     private final Iri iri = Iri.valueOf("http://example.org/A");
 
     @Mock
-    private ProjectId projectId;
+    private GitHubRepositoryCoordinates repoCoords;
 
     @Mock
     private GitHubIssue issue;
@@ -49,9 +49,9 @@ public class GitHubIssueTranslatorTest {
                 .thenReturn(new TermIdExtractor.ExtractedTermIds(Set.of(oboId),
                                                                  Set.of(iri)));
 
-        var issueRecord = translator.getIssueRecord(issue, projectId);
+        var issueRecord = translator.getIssueRecord(issue, repoCoords);
 
-        assertThat(issueRecord.projectId()).isEqualTo(projectId);
+        assertThat(issueRecord.repoCoords()).isEqualTo(repoCoords);
         assertThat(issueRecord.issue()).isEqualTo(issue);
         assertThat(issueRecord.oboIds()).containsExactly(oboId);
         assertThat(issueRecord.iris()).containsExactly(iri);
@@ -61,7 +61,7 @@ public class GitHubIssueTranslatorTest {
     @Test
     public void shouldThrowNpeWithNullIssue() {
         var projectId = mock(ProjectId.class);
-        assertThrows(NullPointerException.class, () -> translator.getIssueRecord(null, projectId));
+        assertThrows(NullPointerException.class, () -> translator.getIssueRecord(null, repoCoords));
     }
 
     @Test

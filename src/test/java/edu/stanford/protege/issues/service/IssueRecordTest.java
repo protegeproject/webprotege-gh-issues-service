@@ -30,8 +30,7 @@ public class IssueRecordTest {
     @Mock
     private GitHubIssue issue;
 
-    @Mock
-    private ProjectId projectId;
+    private GitHubRepositoryCoordinates repoCoords = GitHubRepositoryCoordinates.of("ACME", "R1");
 
     private Set<OboId> oboIds = Set.of(mock(OboId.class));
 
@@ -43,11 +42,11 @@ public class IssueRecordTest {
     @Test
     public void shouldCreateObjectWithConstructor() {
         when(issue.nodeId()).thenReturn(NODE_ID);
-        var issueRecord = new IssueRecord(NODE_ID, projectId, issue, oboIds, iris);
+        var issueRecord = new IssueRecord(NODE_ID, repoCoords, issue, oboIds, iris);
 
         assertThat(issueRecord).isNotNull();
         assertThat(issueRecord.nodeId()).isEqualTo(NODE_ID);
-        assertThat(issueRecord.projectId()).isEqualTo(projectId);
+        assertThat(issueRecord.repoCoords()).isEqualTo(repoCoords);
         assertThat(issueRecord.issue()).isEqualTo(issue);
         assertThat(issueRecord.oboIds()).isEqualTo(oboIds);
         assertThat(issueRecord.iris()).isEqualTo(iris);
@@ -64,11 +63,11 @@ public class IssueRecordTest {
     public void shouldCreateObjectWithFactoryMethod() {
         when(issue.nodeId()).thenReturn(NODE_ID);
 
-        var issueRecord = IssueRecord.of(projectId, issue, oboIds, iris);
+        var issueRecord = IssueRecord.of(issue, repoCoords, oboIds, iris);
 
         assertThat(issueRecord).isNotNull();
         assertThat(issueRecord.nodeId()).isEqualTo(NODE_ID);
-        assertThat(issueRecord.projectId()).isEqualTo(projectId);
+        assertThat(issueRecord.repoCoords()).isEqualTo(repoCoords);
         assertThat(issueRecord.issue()).isEqualTo(issue);
         assertThat(issueRecord.oboIds()).isEqualTo(oboIds);
         assertThat(issueRecord.iris()).isEqualTo(iris);
@@ -84,7 +83,7 @@ public class IssueRecordTest {
         var inputStream = IssueRecordTest.class.getResourceAsStream("/IssueRecord.json");
         var issueRecord = tester.readObject(inputStream);
         assertThat(issueRecord.nodeId()).isEqualTo(NODE_ID);
-        assertThat(issueRecord.projectId()).isEqualTo(ProjectId.valueOf("11111111-2222-3333-4444-555555555555"));
+        assertThat(issueRecord.repoCoords()).isEqualTo(GitHubRepositoryCoordinates.of("ACME", "R1"));
         assertThat(issueRecord.iris()).containsExactly(Iri.valueOf("https://example.org/A"));
         assertThat(issueRecord.oboIds()).containsExactly(OboId.valueOf("GO:1234567"));
     }
@@ -101,8 +100,8 @@ public class IssueRecordTest {
     @Test
     void shouldBeEqual() {
         when(issue.nodeId()).thenReturn(NODE_ID);
-        var issueRecordA = new IssueRecord(NODE_ID, projectId, issue, Set.of(), Set.of());
-        var issueRecordB = new IssueRecord(NODE_ID, projectId, issue, Set.of(), Set.of());
+        var issueRecordA = new IssueRecord(NODE_ID, repoCoords, issue, Set.of(), Set.of());
+        var issueRecordB = new IssueRecord(NODE_ID, repoCoords, issue, Set.of(), Set.of());
         assertThat(issueRecordA).isEqualTo(issueRecordB);
     }
 }

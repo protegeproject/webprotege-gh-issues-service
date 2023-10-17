@@ -3,6 +3,8 @@ package edu.stanford.protege.issues.service;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -13,20 +15,22 @@ import org.testcontainers.utility.DockerImageName;
  */
 public class MongoTestExtension  implements BeforeAllCallback, AfterAllCallback {
 
+    protected static final int MONGODB_PORT = 27017;
+
     private MongoDBContainer container;
 
     @Override
     public void beforeAll(ExtensionContext extensionContext) throws Exception {
         var imageName = DockerImageName.parse("mongo:4.0.10");
         container = new MongoDBContainer(imageName)
-                .withExposedPorts(27017);
+                .withExposedPorts(MONGODB_PORT);
         container.start();
+    }
 
-        var mappedPort = container.getMappedPort(27017);
-        // spring.data.mongodb.host=localhost
-        //spring.data.mongodb.port=27017
-        System.setProperty("spring.data.mongodb.host", "localhost");
-        System.setProperty("spring.data.mongodb.port", Integer.toString(mappedPort));
+    @DynamicPropertySource
+    public void setProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.data.mongodb.host", () -> "localhost");
+        registry.add("spring.data.mongodb.port", () -> container.getMappedPort(MONGODB_PORT));
     }
 
     @Override

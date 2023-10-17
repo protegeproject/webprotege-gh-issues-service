@@ -22,22 +22,6 @@ import java.util.Set;
 public interface LocalIssueStore extends CrudRepository<IssueRecord, String> {
 
     /**
-     * Deletes all issue records associated with a specific project ID.
-     *
-     * @param projectId The ID of the project for which the issue records should be deleted. Must not be null.
-     */
-    void deleteAllByProjectId(@Nonnull ProjectId projectId);
-
-    /**
-     * Finds and returns a list of issue records associated with a specific project ID.
-     *
-     * @param projectId The ID of the project for which issue records are queried. Must not be null.
-     * @return A list of issue records related to the specified project ID.
-     */
-    @Nonnull
-    List<IssueRecord> findAllByProjectId(@Nonnull ProjectId projectId);
-
-    /**
      * Finds and returns a list of issue records associated with a specific IRI (Internationalized Resource Identifier).
      *
      * @param iri The IRI for which issue records are queried. Must not be null.
@@ -56,22 +40,26 @@ public interface LocalIssueStore extends CrudRepository<IssueRecord, String> {
     List<IssueRecord> findAllByOboIds(@Nonnull OboId oboId);
 
     /**
-     * Finds and returns a list of issue records associated with a specific project ID and OBO ID.
+     * Finds and returns a list of issue records associated with a specific GitHub repo and OBO ID.
      *
-     * @param projectId The ID of the project for which issue records are queried. Must not be null.
+     * @param repoCoords The coordinates of the GitHub for which issue records are queried. Must not be null.
      * @param oboId The OBO ID for which issue records are queried. Must not be null.
      * @return A list of issue records that mention the specified project ID and OBO ID.
      */
     @Nonnull
-    List<IssueRecord> findAllByProjectIdAndOboIds(@Nonnull ProjectId projectId, @Nonnull OboId oboId);
+    List<IssueRecord> findAllByRepoCoordsAndOboIds(@Nonnull GitHubRepositoryCoordinates repoCoords, @Nonnull OboId oboId);
 
     /**
      * Finds and returns a list of issue records associated with a specific project ID and IRI.
      *
-     * @param projectId The ID of the project for which issue records are queried. Must not be null.
+     * @param repoCoords The ID of the project for which issue records are queried. Must not be null.
      * @param iri The IRI for which issue records are queried. Must not be null.
      * @return A list of issue records related to the specified project ID and IRI.
      */
     @Nonnull
-    List<IssueRecord> findAllByProjectIdAndIris(@Nonnull ProjectId projectId, @Nonnull Iri iri);
+    List<IssueRecord> findAllByRepoCoordsAndIris(@Nonnull GitHubRepositoryCoordinates repoCoords, @Nonnull Iri iri);
+
+    void deleteAllByRepoCoords(@Nonnull GitHubRepositoryCoordinates repoCoords);
+
+    List<IssueRecord> findAllByRepoCoords(GitHubRepositoryCoordinates repoCoord);
 }

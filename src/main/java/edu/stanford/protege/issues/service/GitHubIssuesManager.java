@@ -13,7 +13,6 @@ import java.util.List;
  * Stanford Center for Biomedical Informatics Research
  * 2023-09-15
  */
-@Component
 public interface GitHubIssuesManager {
 
     void linkGitHubRepo(@Nonnull ProjectId projectId,

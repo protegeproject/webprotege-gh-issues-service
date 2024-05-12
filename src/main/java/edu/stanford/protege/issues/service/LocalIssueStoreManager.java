@@ -1,6 +1,5 @@
 package edu.stanford.protege.issues.service;
 
-import edu.stanford.protege.issues.shared.GitHubIssue;
 import edu.stanford.protege.webprotege.common.ProjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -22,11 +20,11 @@ public class LocalIssueStoreManager {
 
     private static final Logger logger = LoggerFactory.getLogger(LocalIssueStoreManager.class);
 
-    private final ProjectGitHubLinkRecordRepository linkRepository;
+    private final GitHubRepositoryLinkRecordStore linkRepository;
 
     private final LocalIssueStoreLoader localIssueStoreLoader;
 
-    public LocalIssueStoreManager(ProjectGitHubLinkRecordRepository linkRepository,
+    public LocalIssueStoreManager(GitHubRepositoryLinkRecordStore linkRepository,
                                   LocalIssueStoreLoader localIssueStoreLoader) {
         this.linkRepository = linkRepository;
         this.localIssueStoreLoader = localIssueStoreLoader;
@@ -35,7 +33,7 @@ public class LocalIssueStoreManager {
     public void linkProjectToGitHubRepo(@Nonnull ProjectId projectId, @Nonnull GitHubRepositoryCoordinates repoCoords) {
         var existingLink = linkRepository.findById(projectId);
         if(existingLink.isEmpty()) {
-            linkRepository.save(ProjectGitHubLinkRecord.of(projectId, repoCoords));
+            linkRepository.save(GitHubRepositoryLinkRecord.of(projectId, repoCoords));
         }
     }
 

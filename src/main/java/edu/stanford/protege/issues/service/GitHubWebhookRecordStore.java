@@ -8,6 +8,6 @@ import org.springframework.data.repository.CrudRepository;
  * Stanford Center for Biomedical Informatics Research
  * 2023-10-16
  */
-public interface GitHubWebhookRecordRepository extends CrudRepository<GitHubWebhookRecord, ProjectId> {
+public interface GitHubWebhookRecordStore extends CrudRepository<GitHubWebhookRecord, ProjectId> {
 
 }

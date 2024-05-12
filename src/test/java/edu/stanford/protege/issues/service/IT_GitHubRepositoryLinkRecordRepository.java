@@ -14,10 +14,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ExtendWith(MongoTestExtension.class)
-public class IT_ProjectGitHubLinkRecordRepository {
+public class IT_GitHubRepositoryLinkRecordRepository {
 
     @Autowired
-    private ProjectGitHubLinkRecordRepository repository;
+    private GitHubRepositoryLinkRecordStore repository;
 
     private ProjectId projectId;
 
@@ -30,7 +30,7 @@ public class IT_ProjectGitHubLinkRecordRepository {
         projectId = ProjectId.generate();
         repoCoords = GitHubRepositoryCoordinates.of("TestOrg", "TestRepoName");
         updatedAt = Instant.now();
-        repository.save(new ProjectGitHubLinkRecord(projectId, repoCoords, updatedAt, true));
+        repository.save(new GitHubRepositoryLinkRecord(projectId, repoCoords, updatedAt, true));
     }
 
     @AfterEach

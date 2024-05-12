@@ -13,9 +13,9 @@ import java.util.List;
  * 2023-10-16
  */
 @Repository
-public interface ProjectGitHubLinkRecordRepository extends CrudRepository<ProjectGitHubLinkRecord, ProjectId> {
+public interface GitHubRepositoryLinkRecordStore extends CrudRepository<GitHubRepositoryLinkRecord, ProjectId> {
 
     @Nonnull
-    List<ProjectGitHubLinkRecord> findAllByRepoCoords(@Nonnull GitHubRepositoryCoordinates repoCoords);
+    List<GitHubRepositoryLinkRecord> findAllByRepoCoords(@Nonnull GitHubRepositoryCoordinates repoCoords);
 
 }

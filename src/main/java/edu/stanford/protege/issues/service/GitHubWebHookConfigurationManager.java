@@ -26,11 +26,11 @@ public class GitHubWebHookConfigurationManager {
 
     private final GitHub gitHub;
 
-    private final GitHubWebhookRecordRepository webHookRepo;
+    private final GitHubWebhookRecordStore webHookRepo;
 
     private final String webhookUrl;
 
-    public GitHubWebHookConfigurationManager(GitHub gitHub, GitHubWebhookRecordRepository webHookRepo,
+    public GitHubWebHookConfigurationManager(GitHub gitHub, GitHubWebhookRecordStore webHookRepo,
                                              @Value("${webprotege.github.webhook.url:}") String webhookUrl) {
         this.gitHub = gitHub;
         this.webHookRepo = webHookRepo;

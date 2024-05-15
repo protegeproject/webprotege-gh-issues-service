@@ -1,6 +1,6 @@
 package edu.stanford.protege.issues.service;
 
-import edu.stanford.protege.issues.shared.GitHubLabel;
+import edu.stanford.protege.github.issues.shared.GitHubLabel;
 import org.kohsuke.github.GHLabel;
 import org.springframework.stereotype.Component;
 

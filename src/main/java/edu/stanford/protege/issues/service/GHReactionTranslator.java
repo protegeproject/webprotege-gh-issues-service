@@ -1,8 +1,8 @@
 package edu.stanford.protege.issues.service;
 
 import com.google.common.collect.HashMultiset;
-import edu.stanford.protege.issues.shared.GitHubReaction;
-import edu.stanford.protege.issues.shared.GitHubReactions;
+import edu.stanford.protege.github.issues.shared.GitHubReaction;
+import edu.stanford.protege.github.issues.shared.GitHubReactions;
 import org.kohsuke.github.GHReaction;
 import org.kohsuke.github.ReactionContent;
 import org.springframework.stereotype.Component;

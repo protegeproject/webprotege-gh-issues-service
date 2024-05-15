@@ -2,7 +2,8 @@ package edu.stanford.protege.issues.service;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import edu.stanford.protege.issues.shared.GitHubIssue;
+import edu.stanford.protege.github.issues.shared.GitHubIssue;
+import edu.stanford.protege.github.shared.GitHubRepository;
 
 /**
  * Matthew Horridge

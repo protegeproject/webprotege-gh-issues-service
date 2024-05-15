@@ -1,7 +1,7 @@
 package edu.stanford.protege.issues.service;
 
-import edu.stanford.protege.issues.shared.GitHubLabel;
-import edu.stanford.protege.issues.shared.GitHubState;
+import edu.stanford.protege.github.issues.shared.GitHubLabel;
+import edu.stanford.protege.github.issues.shared.GitHubState;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

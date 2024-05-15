@@ -1,6 +1,7 @@
 package edu.stanford.protege.issues.service;
 
-import edu.stanford.protege.issues.shared.*;
+import edu.stanford.protege.github.issues.shared.*;
+import edu.stanford.protege.github.shared.GitHubUser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,8 @@
 package edu.stanford.protege.issues.service;
 
 import com.google.common.collect.HashMultiset;
-import edu.stanford.protege.issues.shared.*;
+import edu.stanford.protege.github.issues.shared.*;
+import edu.stanford.protege.github.shared.GitHubUser;
 import org.kohsuke.github.GHIssue;
 import org.springframework.stereotype.Component;
 

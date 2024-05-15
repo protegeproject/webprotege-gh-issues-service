@@ -1,7 +1,7 @@
 package edu.stanford.protege.issues.service;
 
-import edu.stanford.protege.issues.shared.GitHubUser;
-import edu.stanford.protege.issues.shared.GitHubUserType;
+import edu.stanford.protege.github.shared.GitHubUser;
+import edu.stanford.protege.github.shared.GitHubUserType;
 import org.kohsuke.github.GHUser;
 import org.springframework.stereotype.Component;
 

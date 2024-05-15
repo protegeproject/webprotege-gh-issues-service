@@ -1,8 +1,5 @@
 package edu.stanford.protege.issues.service;
 
-import edu.stanford.protege.issues.shared.GitHubIssue;
-import edu.stanford.protege.webprotege.common.ProjectId;
-import org.semanticweb.owlapi.model.OWLEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 

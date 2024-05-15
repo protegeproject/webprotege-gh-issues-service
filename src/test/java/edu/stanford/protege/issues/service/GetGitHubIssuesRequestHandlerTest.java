@@ -1,7 +1,7 @@
 package edu.stanford.protege.issues.service;
 
-import edu.stanford.protege.issues.server.GetGitHubIssuesRequest;
-import edu.stanford.protege.issues.shared.GitHubIssue;
+import edu.stanford.protege.github.issues.server.GetGitHubIssuesRequest;
+import edu.stanford.protege.github.issues.shared.GitHubIssue;
 import edu.stanford.protege.webprotege.authorization.ActionId;
 import edu.stanford.protege.webprotege.common.ProjectId;
 import edu.stanford.protege.webprotege.ipc.ExecutionContext;

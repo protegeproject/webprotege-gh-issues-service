@@ -1,5 +1,8 @@
 package edu.stanford.protege.issues.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.stanford.protege.webprotege.ipc.impl.RabbitMqProperties;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJson;
@@ -17,14 +20,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * Stanford Center for Biomedical Informatics Research
  * 2023-09-21
  */
-@JsonTest
-@AutoConfigureJson
 public class OboIdTest {
 
     protected static final String OBO_ID = "GO:1234567";
 
-    @Autowired
     private JacksonTester<OboId> tester;
+
+    @BeforeEach
+    void setUp() {
+        JacksonTester.initFields(this, new ObjectMapper());
+    }
 
     @Test
     public void shouldCreateOboIdViaConstructor() {

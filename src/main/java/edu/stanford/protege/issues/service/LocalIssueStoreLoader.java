@@ -1,5 +1,6 @@
 package edu.stanford.protege.issues.service;
 
+import edu.stanford.protege.github.GitHubRepositoryCoordinates;
 import org.kohsuke.github.GHIssueState;
 import org.kohsuke.github.GitHub;
 import org.slf4j.Logger;

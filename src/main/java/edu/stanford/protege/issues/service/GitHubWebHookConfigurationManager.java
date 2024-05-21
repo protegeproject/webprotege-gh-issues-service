@@ -1,6 +1,6 @@
 package edu.stanford.protege.issues.service;
 
-import org.apache.pulsar.client.api.url.URL;
+import edu.stanford.protege.github.GitHubRepositoryCoordinates;
 import org.kohsuke.github.GHEvent;
 import org.kohsuke.github.GitHub;
 import org.kohsuke.github.HttpException;
@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Objects;
 import java.util.Set;
 
@@ -45,7 +47,7 @@ public class GitHubWebHookConfigurationManager {
             }
             var repository = gitHub.getRepository(repoCoords.getFullName());
             var webhook = repository
-                    .createWebHook(URL.createURL(webhookUrl), Set.of(GHEvent.ISSUES));
+                    .createWebHook(URI.create(webhookUrl).toURL(), Set.of(GHEvent.ISSUES));
             var webhookRecord = new GitHubWebhookRecord(webhook.getNodeId(), webhook.getId(), webhook.getName());
             webHookRepo.save(webhookRecord);
             logger.info("Installed webhook on {}", repoCoords);
@@ -53,13 +55,6 @@ public class GitHubWebHookConfigurationManager {
         }
         catch (HttpException e) {
             System.err.println(e.getMessage());
-        }
-        catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
         }
     }
 }

@@ -2,7 +2,8 @@ package edu.stanford.protege.issues.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import edu.stanford.protege.github.issues.shared.GitHubIssue;
+import edu.stanford.protege.github.issues.GitHubIssue;
+import edu.stanford.protege.github.GitHubRepositoryCoordinates;
 import edu.stanford.protege.webprotege.common.ProjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

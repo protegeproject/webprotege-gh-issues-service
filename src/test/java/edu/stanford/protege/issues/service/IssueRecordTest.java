@@ -1,7 +1,11 @@
 package edu.stanford.protege.issues.service;
 
-import edu.stanford.protege.github.issues.shared.GitHubIssue;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import edu.stanford.protege.github.issues.GitHubIssue;
+import edu.stanford.protege.github.GitHubRepositoryCoordinates;
 import edu.stanford.protege.webprotege.common.ProjectId;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -20,8 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@JsonTest
-@AutoConfigureJson
 @ExtendWith(MockitoExtension.class)
 public class IssueRecordTest {
 
@@ -36,8 +38,14 @@ public class IssueRecordTest {
 
     private Set<Iri> iris = Set.of(mock(Iri.class));
 
-    @Autowired
     private JacksonTester<IssueRecord> tester;
+
+    @BeforeEach
+    void setUp() {
+        var objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        JacksonTester.initFields(this, objectMapper);
+    }
 
     @Test
     public void shouldCreateObjectWithConstructor() {

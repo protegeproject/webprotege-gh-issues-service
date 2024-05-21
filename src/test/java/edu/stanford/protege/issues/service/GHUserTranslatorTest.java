@@ -1,7 +1,7 @@
 package edu.stanford.protege.issues.service;
 
-import edu.stanford.protege.github.shared.GitHubUser;
-import edu.stanford.protege.github.shared.GitHubUserType;
+import edu.stanford.protege.github.GitHubUser;
+import edu.stanford.protege.github.GitHubUserType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kohsuke.github.GHUser;

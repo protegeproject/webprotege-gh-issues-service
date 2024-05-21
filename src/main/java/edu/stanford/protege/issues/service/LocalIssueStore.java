@@ -1,12 +1,11 @@
 package edu.stanford.protege.issues.service;
 
+import edu.stanford.protege.github.GitHubRepositoryCoordinates;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * Matthew Horridge

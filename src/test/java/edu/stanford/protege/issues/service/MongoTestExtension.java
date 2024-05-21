@@ -1,8 +1,6 @@
 package edu.stanford.protege.issues.service;
 
-import org.junit.jupiter.api.extension.AfterAllCallback;
-import org.junit.jupiter.api.extension.BeforeAllCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.MongoDBContainer;
@@ -13,7 +11,7 @@ import org.testcontainers.utility.DockerImageName;
  * Stanford Center for Biomedical Informatics Research
  * 2023-09-26
  */
-public class MongoTestExtension  implements BeforeAllCallback, AfterAllCallback {
+public class MongoTestExtension  implements BeforeEachCallback, AfterEachCallback {
 
     private final Logger logger = LoggerFactory.getLogger(MongoTestExtension.class);
 
@@ -22,7 +20,7 @@ public class MongoTestExtension  implements BeforeAllCallback, AfterAllCallback 
     private MongoDBContainer container;
 
     @Override
-    public void beforeAll(ExtensionContext extensionContext) throws Exception {
+    public void beforeEach(ExtensionContext extensionContext) throws Exception {
         var imageName = DockerImageName.parse("mongo:4.0.10");
         container = new MongoDBContainer(imageName)
                 .withExposedPorts(MONGODB_PORT);
@@ -32,7 +30,6 @@ public class MongoTestExtension  implements BeforeAllCallback, AfterAllCallback 
     }
 
     @Override
-    public void afterAll(ExtensionContext extensionContext) throws Exception {
-        container.stop();
+    public void afterEach(ExtensionContext extensionContext) throws Exception {
     }
 }

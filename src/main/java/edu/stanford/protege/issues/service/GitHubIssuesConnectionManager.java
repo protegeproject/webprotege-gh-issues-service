@@ -1,5 +1,6 @@
 package edu.stanford.protege.issues.service;
 
+import edu.stanford.protege.github.GitHubRepositoryCoordinates;
 import edu.stanford.protege.webprotege.common.ProjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

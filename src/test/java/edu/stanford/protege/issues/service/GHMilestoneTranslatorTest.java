@@ -1,8 +1,8 @@
 package edu.stanford.protege.issues.service;
 
-import edu.stanford.protege.github.issues.shared.GitHubMilestone;
-import edu.stanford.protege.github.issues.shared.GitHubState;
-import edu.stanford.protege.github.shared.GitHubUser;
+import edu.stanford.protege.github.issues.GitHubMilestone;
+import edu.stanford.protege.github.issues.GitHubState;
+import edu.stanford.protege.github.GitHubUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,5 +1,6 @@
 package edu.stanford.protege.issues.service;
 
+import edu.stanford.protege.github.GitHubRepositoryCoordinates;
 import edu.stanford.protege.webprotege.common.ProjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Matthew Horridge
@@ -50,6 +52,12 @@ public class LocalIssueStoreManager {
     public void ensureLocalStoreIsUpToDate(@Nonnull ProjectId projectId) {
         Objects.requireNonNull(projectId);
         var record = linkRepository.findById(projectId);
+        record.ifPresentOrElse(r -> {
+                                   logger.info("Found linked GitHub repo for {}.  Details {}", projectId, r);
+                               },
+                               () -> {
+                                   logger.info("No GitHub repo linked for {}", projectId);
+                               });
         if(record.isPresent()) {
             var theRecord = record.get();
             if (theRecord.updateRequired()) {

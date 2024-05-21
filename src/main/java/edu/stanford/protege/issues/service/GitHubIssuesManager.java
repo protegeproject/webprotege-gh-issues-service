@@ -1,6 +1,6 @@
 package edu.stanford.protege.issues.service;
 
-import edu.stanford.protege.github.issues.shared.GitHubIssue;
+import edu.stanford.protege.github.issues.GitHubIssue;
 import edu.stanford.protege.webprotege.common.ProjectId;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.springframework.stereotype.Component;
@@ -42,16 +42,16 @@ public class GitHubIssuesManager {
                     }).orElse(List.of());
         }
 
-        public List<GitHubIssue> getIssues(@Nonnull ProjectId projectId) {
-            return linkRecordRepository.findById(projectId)
-                                       .map(GitHubRepositoryLinkRecord::repoCoords)
-                                       .map(repoCoord -> {
-                                           localIssueStoreManager.ensureLocalStoreIsUpToDate(projectId);
-                                           return localIssueStore.findAllByRepoCoords(repoCoord)
-                                                                 .stream()
-                                                                 .map(IssueRecord::issue)
-                                                                 .toList();
-                                       }).orElse(List.of());
-        }
+//        public List<GitHubIssue> getIssues(@Nonnull ProjectId projectId) {
+//            return linkRecordRepository.findById(projectId)
+//                                       .map(GitHubRepositoryLinkRecord::repoCoords)
+//                                       .map(repoCoord -> {
+//                                           localIssueStoreManager.ensureLocalStoreIsUpToDate(projectId);
+//                                           return localIssueStore.findAllByRepoCoords(repoCoord)
+//                                                                 .stream()
+//                                                                 .map(IssueRecord::issue)
+//                                                                 .toList();
+//                                       }).orElse(List.of());
+//        }
 
 }

@@ -1,8 +1,8 @@
 package edu.stanford.protege.issues.service;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import edu.stanford.protege.github.issues.shared.GitHubIssue;
+import com.fasterxml.jackson.annotation.*;
+import edu.stanford.protege.github.issues.GitHubIssue;
+import edu.stanford.protege.github.GitHubRepositoryCoordinates;
 import org.springframework.data.annotation.Id;
 
 import javax.annotation.Nonnull;
@@ -14,6 +14,7 @@ import java.util.Set;
  * Stanford Center for Biomedical Informatics Research
  * 2023-09-21
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record IssueRecord(@JsonProperty("_id") @Id String nodeId,
                           @JsonProperty("repoCoords") GitHubRepositoryCoordinates repoCoords,
                           @JsonProperty("issue") @Nonnull GitHubIssue issue,

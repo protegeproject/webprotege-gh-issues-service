@@ -1,7 +1,8 @@
 package edu.stanford.protege.issues.service;
 
-import edu.stanford.protege.github.issues.shared.*;
-import edu.stanford.protege.github.shared.GitHubUser;
+import edu.stanford.protege.github.issues.*;
+import edu.stanford.protege.github.GitHubRepositoryCoordinates;
+import edu.stanford.protege.github.GitHubUser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,8 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Stanford Center for Biomedical Informatics Research
  * 2023-09-26
  */
-@SpringBootTest
-@ExtendWith(MongoTestExtension.class)
+@SpringBootTest(properties = "webprotege.rabbitmq.commands-subscribe=false")
+@ExtendWith({MongoTestExtension.class})
 public class IT_LocalIssuesStore {
 
     protected static final String NODE_ID = "abc123";

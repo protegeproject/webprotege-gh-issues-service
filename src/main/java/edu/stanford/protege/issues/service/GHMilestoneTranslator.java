@@ -1,8 +1,8 @@
 package edu.stanford.protege.issues.service;
 
-import edu.stanford.protege.github.issues.shared.GitHubMilestone;
-import edu.stanford.protege.github.issues.shared.GitHubState;
-import edu.stanford.protege.github.shared.GitHubUser;
+import edu.stanford.protege.github.GitHubUser;
+import edu.stanford.protege.github.issues.GitHubMilestone;
+import edu.stanford.protege.github.issues.GitHubState;
 import org.kohsuke.github.GHMilestone;
 import org.springframework.stereotype.Component;
 

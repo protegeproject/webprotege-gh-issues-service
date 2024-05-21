@@ -1,10 +1,9 @@
 package edu.stanford.protege.issues.service;
 
-import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJson;
-import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 
 import java.io.IOException;
@@ -13,12 +12,14 @@ import java.io.StringReader;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@JsonTest
-@AutoConfigureJson
 public class IriTest {
 
-    @Autowired
     private JacksonTester<Iri> tester;
+
+    @BeforeEach
+    void setUp() {
+        JacksonTester.initFields(this, new ObjectMapper());
+    }
 
     @Test
     public void shouldCreateIriViaConstructor() {

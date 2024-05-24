@@ -66,7 +66,7 @@ public class LocalIssueStoreManager {
                     var replacementRecord = theRecord.withUpdatedStatus(Instant.now(), false);
                     linkRepository.save(replacementRecord);
                 } catch (IOException e) {
-                    logger.info("Unable to update repository");
+                    logger.error("Unable to update repository", e);
                     var updateFailed = theRecord.withUpdateFailed(e.getMessage());
                     linkRepository.save(updateFailed);
                 }

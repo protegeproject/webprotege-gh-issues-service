@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import edu.stanford.protege.github.issues.GitHubIssue;
 import edu.stanford.protege.github.GitHubRepositoryCoordinates;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -14,25 +15,26 @@ import java.util.Set;
  * Stanford Center for Biomedical Informatics Research
  * 2023-09-21
  */
+@Document(collection = "GitHubIssueRecords")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record IssueRecord(@JsonProperty("_id") @Id String nodeId,
+public record IssueRecord(@JsonProperty("_id") @Id Long id,
                           @JsonProperty("repoCoords") GitHubRepositoryCoordinates repoCoords,
                           @JsonProperty("issue") @Nonnull GitHubIssue issue,
                           @JsonProperty("oboIds") @Nonnull Set<OboId> oboIds,
                           @JsonProperty("iris") @Nonnull Set<Iri> iris) {
 
-    public IssueRecord(@JsonProperty("_id") String nodeId,
+    public IssueRecord(@JsonProperty("_id") Long id,
                        @JsonProperty("repoCoords") GitHubRepositoryCoordinates repoCoords,
                        @JsonProperty("issue") @Nonnull GitHubIssue issue,
                        @JsonProperty("oboIds") @Nonnull Set<OboId> oboIds,
                        @JsonProperty("iris") @Nonnull Set<Iri> iris) {
-        this.nodeId = Objects.requireNonNull(nodeId);
+        this.id = Objects.requireNonNull(id);
         this.repoCoords = Objects.requireNonNull(repoCoords);
         this.issue = Objects.requireNonNull(issue);
         this.oboIds = Objects.requireNonNull(oboIds);
         this.iris = Objects.requireNonNull(iris);
-        if(!nodeId.equals(issue.nodeId())) {
-            throw new IllegalArgumentException("nodeId and issue.nodeId must be equal");
+        if(!id.equals(issue.id())) {
+            throw new IllegalArgumentException("_id and issue.id must be equal");
         }
     }
 
@@ -41,7 +43,7 @@ public record IssueRecord(@JsonProperty("_id") @Id String nodeId,
                                  @JsonProperty("repoCoords") GitHubRepositoryCoordinates repoCoords,
                                  @JsonProperty("oboIds") @Nonnull Set<OboId> oboIds,
                                  @JsonProperty("iris") @Nonnull Set<Iri> iris) {
-        return new IssueRecord(issue.nodeId(), repoCoords, issue, oboIds, iris);
+        return new IssueRecord(issue.id(), repoCoords, issue, oboIds, iris);
     }
 
     @JsonCreator
@@ -51,6 +53,6 @@ public record IssueRecord(@JsonProperty("_id") @Id String nodeId,
                                 @JsonProperty("issue") @Nonnull GitHubIssue issue,
                                  @JsonProperty("oboIds") @Nonnull Set<OboId> oboIds,
                                  @JsonProperty("iris") @Nonnull Set<Iri> iris) {
-        return new IssueRecord(issueNodeId, repoCoords, issue, oboIds, iris);
+        return new IssueRecord(issue.id(), repoCoords, issue, oboIds, iris);
     }
 }

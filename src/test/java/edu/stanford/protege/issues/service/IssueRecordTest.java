@@ -4,15 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.stanford.protege.github.issues.GitHubIssue;
 import edu.stanford.protege.github.GitHubRepositoryCoordinates;
-import edu.stanford.protege.webprotege.common.ProjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJson;
-import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 
 import java.io.IOException;
@@ -27,7 +23,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class IssueRecordTest {
 
-    protected static final String NODE_ID = "MDU6SXNzdWUx";
+    protected static final long ID = 33;
 
     @Mock
     private GitHubIssue issue;
@@ -49,11 +45,11 @@ public class IssueRecordTest {
 
     @Test
     public void shouldCreateObjectWithConstructor() {
-        when(issue.nodeId()).thenReturn(NODE_ID);
-        var issueRecord = new IssueRecord(NODE_ID, repoCoords, issue, oboIds, iris);
+        when(issue.id()).thenReturn(ID);
+        var issueRecord = new IssueRecord(ID, repoCoords, issue, oboIds, iris);
 
         assertThat(issueRecord).isNotNull();
-        assertThat(issueRecord.nodeId()).isEqualTo(NODE_ID);
+        assertThat(issueRecord.id()).isEqualTo(ID);
         assertThat(issueRecord.repoCoords()).isEqualTo(repoCoords);
         assertThat(issueRecord.issue()).isEqualTo(issue);
         assertThat(issueRecord.oboIds()).isEqualTo(oboIds);
@@ -69,12 +65,12 @@ public class IssueRecordTest {
 
     @Test
     public void shouldCreateObjectWithFactoryMethod() {
-        when(issue.nodeId()).thenReturn(NODE_ID);
+        when(issue.id()).thenReturn(ID);
 
         var issueRecord = IssueRecord.of(issue, repoCoords, oboIds, iris);
 
         assertThat(issueRecord).isNotNull();
-        assertThat(issueRecord.nodeId()).isEqualTo(NODE_ID);
+        assertThat(issueRecord.id()).isEqualTo(ID);
         assertThat(issueRecord.repoCoords()).isEqualTo(repoCoords);
         assertThat(issueRecord.issue()).isEqualTo(issue);
         assertThat(issueRecord.oboIds()).isEqualTo(oboIds);
@@ -90,7 +86,7 @@ public class IssueRecordTest {
     public void shouldDeserializeJson() throws IOException {
         var inputStream = IssueRecordTest.class.getResourceAsStream("/IssueRecord.json");
         var issueRecord = tester.readObject(inputStream);
-        assertThat(issueRecord.nodeId()).isEqualTo(NODE_ID);
+        assertThat(issueRecord.id()).isEqualTo(ID);
         assertThat(issueRecord.repoCoords()).isEqualTo(GitHubRepositoryCoordinates.of("ACME", "R1"));
         assertThat(issueRecord.iris()).containsExactly(Iri.valueOf("https://example.org/A"));
         assertThat(issueRecord.oboIds()).containsExactly(OboId.valueOf("GO:1234567"));
@@ -107,9 +103,9 @@ public class IssueRecordTest {
 
     @Test
     void shouldBeEqual() {
-        when(issue.nodeId()).thenReturn(NODE_ID);
-        var issueRecordA = new IssueRecord(NODE_ID, repoCoords, issue, Set.of(), Set.of());
-        var issueRecordB = new IssueRecord(NODE_ID, repoCoords, issue, Set.of(), Set.of());
+        when(issue.id()).thenReturn(ID);
+        var issueRecordA = new IssueRecord(ID, repoCoords, issue, Set.of(), Set.of());
+        var issueRecordB = new IssueRecord(ID, repoCoords, issue, Set.of(), Set.of());
         assertThat(issueRecordA).isEqualTo(issueRecordB);
     }
 }

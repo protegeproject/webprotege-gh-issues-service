@@ -16,6 +16,7 @@ webprotege:
     requestqueue: webprotege-gh-issues-queue
     responsequeue: webprotege-gh-issues-response-queue
     timeout: 60000
+    event-subscribe: true
   keycloak:
     serverUrl: http://webprotege-local.edu/auth
     realmName: webprotege

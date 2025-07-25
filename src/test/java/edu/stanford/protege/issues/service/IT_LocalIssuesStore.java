@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith({MongoTestExtension.class})
 public class IT_LocalIssuesStore {
 
-    protected static final String NODE_ID = "abc123";
+    protected static final long ID = 304050303;
 
     @Autowired
     private LocalIssueStore issueStore;
@@ -46,8 +46,8 @@ public class IT_LocalIssuesStore {
         repoCoords = GitHubRepositoryCoordinates.of("ACME", "R1");
         var now = Instant.now().truncatedTo(ChronoUnit.MILLIS);
         issue = GitHubIssue.get("https://example.org/issues/1",
-                                1,
-                                NODE_ID,
+                                ID,
+                                "",
                                 1,
                                 "My issue",
                                 GitHubUser.empty(),
@@ -68,7 +68,7 @@ public class IT_LocalIssuesStore {
                                 null);
         oboId = OboId.valueOf("ID:1234567");
         iri = Iri.valueOf("http://example.org/A");
-        issueRecord = new IssueRecord(NODE_ID,
+        issueRecord = new IssueRecord(ID,
                                       GitHubRepositoryCoordinates.of("ACME", "R1"),
                                       issue,
                                       Set.of(oboId),
@@ -99,17 +99,17 @@ public class IT_LocalIssuesStore {
     @Test
     void shouldFindByNodeId() {
         issueStore.save(issueRecord);
-        var found = issueStore.findById(NODE_ID);
-        assertThat(found).map(IssueRecord::nodeId).contains(NODE_ID);
+        var found = issueStore.findById(ID);
+        assertThat(found).map(IssueRecord::id).contains(ID);
     }
 
     @Test
     void shouldRoundTripRecord() {
         issueStore.save(issueRecord);
-        var found = issueStore.findById(NODE_ID);
+        var found = issueStore.findById(ID);
         assertThat(found).isPresent();
         var foundRecord = found.get();
-        assertThat(foundRecord.nodeId()).isEqualTo(NODE_ID);
+        assertThat(foundRecord.id()).isEqualTo(ID);
         assertThat(foundRecord.iris()).containsExactly(iri);
         assertThat(foundRecord.oboIds()).containsExactly(oboId);
         assertThat(foundRecord.issue()).isEqualTo(issue);
@@ -128,7 +128,7 @@ public class IT_LocalIssuesStore {
         issueStore.save(issueRecord);
         var found = issueStore.findAllByIris(iri);
         assertThat(found).hasSize(1);
-        assertThat(found).first().hasFieldOrPropertyWithValue("nodeId", NODE_ID);
+        assertThat(found).first().hasFieldOrPropertyWithValue("id", ID);
     }
 
     @Test
@@ -136,7 +136,7 @@ public class IT_LocalIssuesStore {
         issueStore.save(issueRecord);
         var found = issueStore.findAllByOboIds(oboId);
         assertThat(found).hasSize(1);
-        assertThat(found).first().hasFieldOrPropertyWithValue("nodeId", NODE_ID);
+        assertThat(found).first().hasFieldOrPropertyWithValue("id", ID);
     }
 
     @Test
@@ -144,7 +144,7 @@ public class IT_LocalIssuesStore {
         issueStore.save(issueRecord);
         var found = issueStore.findAllByRepoCoordsAndOboIds(repoCoords, oboId);
         assertThat(found).hasSize(1);
-        assertThat(found).first().hasFieldOrPropertyWithValue("nodeId", NODE_ID);
+        assertThat(found).first().hasFieldOrPropertyWithValue("id", ID);
     }
 
     @Test
@@ -152,7 +152,7 @@ public class IT_LocalIssuesStore {
         issueStore.save(issueRecord);
         var found = issueStore.findAllByRepoCoordsAndIris(repoCoords, iri);
         assertThat(found).hasSize(1);
-        assertThat(found).first().hasFieldOrPropertyWithValue("nodeId", NODE_ID);
+        assertThat(found).first().hasFieldOrPropertyWithValue("id", ID);
     }
 
     @Test
@@ -190,7 +190,7 @@ public class IT_LocalIssuesStore {
                                         issueRecord.iris());
         issueStore.save(nextRecord);
         assertThat(issueStore.count()).isEqualTo(1);
-        assertThat(issueStore.findById(NODE_ID)).map(IssueRecord::nodeId).contains(NODE_ID);
-        assertThat(issueStore.findById(NODE_ID)).map(rec -> rec.issue().title()).contains(updatedTitle);
+        assertThat(issueStore.findById(ID)).map(IssueRecord::id).contains(ID);
+        assertThat(issueStore.findById(ID)).map(rec -> rec.issue().title()).contains(updatedTitle);
     }
 }

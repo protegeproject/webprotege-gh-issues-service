@@ -15,7 +15,7 @@ import java.util.List;
  * It extends the `CrudRepository` interface and provides methods for managing and querying issue records.
  */
 @Component
-public interface LocalIssueStore extends CrudRepository<IssueRecord, String> {
+public interface LocalIssueStore extends CrudRepository<IssueRecord, Long> {
 
     /**
      * Finds and returns a list of issue records associated with a specific IRI (Internationalized Resource Identifier).

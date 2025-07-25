@@ -52,15 +52,14 @@ public class LocalIssueStoreUpdater {
 
     public synchronized void updateIssues(@Nonnull GitHubRepositoryCoordinates repoCoords,
                                          @Nonnull List<GitHubIssue> issues) {
-        var records = issues.stream()
-                .map(issue -> issueTranslator.getIssueRecord(issue, repoCoords))
-                .toList();
+        logger.info("Updating issues {} in {}", issues.size(), repoCoords);
         var issueIds = issues.stream()
-                .map(GitHubIssue::nodeId)
-                .collect(Collectors.toSet());
-        var issuesToUpdate = localIssueStore.findAllById(issueIds);
-
-//        localIssueStore.deleteAllById();
+                .map(GitHubIssue::id)
+                .toList();
+        localIssueStore.deleteAllById(issueIds);
+        var records = issues.stream()
+                .map(issue -> gitHubIssueTranslator.getIssueRecord(issue, repoCoords))
+                .toList();
         localIssueStore.saveAll(records);
     }
 

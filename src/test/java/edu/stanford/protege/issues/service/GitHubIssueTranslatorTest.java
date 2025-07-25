@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class GitHubIssueTranslatorTest {
 
-    private static final String NODE_ID = "TheNodeId";
+    private static final long ID = 33;
 
     private final OboId oboId = OboId.valueOf("GO:1234567");
 
@@ -44,7 +44,7 @@ public class GitHubIssueTranslatorTest {
 
     @Test
     public void shouldReturnIssueRecord() {
-        when(issue.nodeId()).thenReturn(NODE_ID);
+        when(issue.id()).thenReturn(ID);
 
         when(termIdExtractor.extractTermIds(anyString()))
                 .thenReturn(new TermIdExtractor.ExtractedTermIds(Set.of(oboId),
@@ -56,7 +56,7 @@ public class GitHubIssueTranslatorTest {
         assertThat(issueRecord.issue()).isEqualTo(issue);
         assertThat(issueRecord.oboIds()).containsExactly(oboId);
         assertThat(issueRecord.iris()).containsExactly(iri);
-        assertThat(issueRecord.nodeId()).isEqualTo(NODE_ID);
+        assertThat(issueRecord.id()).isEqualTo(ID);
     }
 
     @Test

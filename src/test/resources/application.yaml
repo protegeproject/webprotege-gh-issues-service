@@ -23,3 +23,5 @@ webprotege:
     clientSecret: C1MYgWgr9qpLsnNnPS3nbFNf5nGDe5H7
     username: admin
     password: password
+  github:
+    app-id: 123456

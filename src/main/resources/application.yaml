@@ -6,10 +6,12 @@ spring:
     port: 5672
     password: guest
     username: guest
+server:
 
   data:
     mongodb:
       auto-index-creation: true
+  port: 030403
 
 webprotege:
   rabbitmq:

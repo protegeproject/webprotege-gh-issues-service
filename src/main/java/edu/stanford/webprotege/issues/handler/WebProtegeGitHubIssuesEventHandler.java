@@ -1,7 +1,7 @@
 package edu.stanford.webprotege.issues.handler;
 
 import edu.stanford.webprotege.issues.message.WebProtegeGitHubIssuesEvent;
-import edu.stanford.webprotege.issues.persistence.GitHubRepositoryLinkRecordStore;
+import edu.stanford.webprotege.issues.persistence.IssuesSyncStateRecordRepository;
 import edu.stanford.webprotege.issues.persistence.LocalIssueStoreUpdater;
 import edu.stanford.protege.webprotege.ipc.EventHandler;
 import edu.stanford.protege.webprotege.ipc.WebProtegeHandler;
@@ -14,13 +14,13 @@ import java.util.List;
 @WebProtegeHandler
 public class WebProtegeGitHubIssuesEventHandler implements EventHandler<WebProtegeGitHubIssuesEvent> {
 
-    private final GitHubRepositoryLinkRecordStore store;
+    private final IssuesSyncStateRecordRepository store;
 
     private final LocalIssueStoreUpdater updater;
 
     private final Logger logger = LoggerFactory.getLogger(WebProtegeGitHubIssuesEventHandler.class);
 
-    public WebProtegeGitHubIssuesEventHandler(GitHubRepositoryLinkRecordStore store, LocalIssueStoreUpdater updater) {
+    public WebProtegeGitHubIssuesEventHandler(IssuesSyncStateRecordRepository store, LocalIssueStoreUpdater updater) {
         this.store = store;
         this.updater = updater;
     }

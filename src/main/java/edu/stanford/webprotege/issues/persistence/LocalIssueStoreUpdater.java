@@ -2,9 +2,7 @@ package edu.stanford.webprotege.issues.persistence;
 
 import edu.stanford.protege.github.issues.GitHubIssue;
 import edu.stanford.protege.github.GitHubRepositoryCoordinates;
-import edu.stanford.webprotege.issues.translator.GHIssueTranslator;
 import edu.stanford.webprotege.issues.translator.GitHubIssueTranslator;
-import org.kohsuke.github.GHIssue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -25,29 +23,20 @@ public class LocalIssueStoreUpdater {
 
     private static final Logger logger = LoggerFactory.getLogger(LocalIssueStoreLoader.class);
 
-    private final GHIssueTranslator ghIssueTranslator;
-
     private final GitHubIssueTranslator gitHubIssueTranslator;
 
     private final LocalIssueStore localIssueStore;
 
-    private final GitHubIssueTranslator issueTranslator;
-
     /**
      * Constructs a new LocalIssueStoreUpdater object.
      *
-     * @param ghIssueTranslator     The translator for converting GitHub issues to records. Must not be null.
      * @param gitHubIssueTranslator The translator for converting translated issues to issue records. Must not be null.
      * @param localIssueStore       The local issue store to update. Must not be null.
-     * @param issueTranslator
      */
-    public LocalIssueStoreUpdater(GHIssueTranslator ghIssueTranslator,
-                                  GitHubIssueTranslator gitHubIssueTranslator,
-                                  LocalIssueStore localIssueStore, GitHubIssueTranslator issueTranslator) {
-        this.ghIssueTranslator = ghIssueTranslator;
+    public LocalIssueStoreUpdater(GitHubIssueTranslator gitHubIssueTranslator,
+                                  LocalIssueStore localIssueStore) {
         this.gitHubIssueTranslator = gitHubIssueTranslator;
         this.localIssueStore = localIssueStore;
-        this.issueTranslator = issueTranslator;
     }
 
     public synchronized void updateIssues(@Nonnull GitHubRepositoryCoordinates repoCoords,
@@ -67,13 +56,13 @@ public class LocalIssueStoreUpdater {
      * Replaces all locally stored issues in a specific GitHub repository with the provided GitHub issues.
      *
      * @param repoCoords The coordinates of the GitHub repository to which the GitHub issues belong. Must not be null.
-     * @param ghIssues The list of GitHub issues to update the local store with.
+     * @param issues The list of GitHub issues to update the local store with.
      */
     public synchronized void replaceAll(@Nonnull GitHubRepositoryCoordinates repoCoords,
-                                        @Nonnull List<GHIssue> ghIssues) {
+                                        @Nonnull List<GitHubIssue> issues) {
         Objects.requireNonNull(repoCoords);
         // Translate to records and save
-        var issueRecords = translateToIssueRecords(repoCoords, ghIssues);
+        var issueRecords = translateToIssueRecords(repoCoords, issues);
 
         // Delete any existing issues with the specified repoCoords
         localIssueStore.deleteAllByRepoCoords(repoCoords);
@@ -91,9 +80,8 @@ public class LocalIssueStoreUpdater {
      * @return A list of issue records.
      */
     private List<IssueRecord> translateToIssueRecords(GitHubRepositoryCoordinates repoCoords,
-                                                      List<GHIssue> allIssues) {
+                                                      List<GitHubIssue> allIssues) {
         return allIssues.stream()
-                        .map(ghIssueTranslator::translate)
                         .map(issue -> gitHubIssueTranslator.getIssueRecord(issue, repoCoords))
                         .toList();
     }

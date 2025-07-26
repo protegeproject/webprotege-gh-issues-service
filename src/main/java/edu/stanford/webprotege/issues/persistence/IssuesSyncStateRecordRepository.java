@@ -14,9 +14,9 @@ import java.util.List;
  * 2023-10-16
  */
 @Repository
-public interface GitHubRepositoryLinkRecordStore extends CrudRepository<GitHubRepositoryLinkRecord, ProjectId> {
+public interface IssuesSyncStateRecordRepository extends CrudRepository<IssuesSyncStateRecord, ProjectId> {
 
     @Nonnull
-    List<GitHubRepositoryLinkRecord> findAllByRepoCoords(@Nonnull GitHubRepositoryCoordinates repoCoords);
+    List<IssuesSyncStateRecord> findAllByRepoCoords(@Nonnull GitHubRepositoryCoordinates repoCoords);
 
 }

@@ -1,8 +1,7 @@
 package edu.stanford.webprotege.issues.persistence;
 
 import edu.stanford.protege.github.GitHubRepositoryCoordinates;
-import org.kohsuke.github.GHIssueState;
-import org.kohsuke.github.GitHub;
+import edu.stanford.webprotege.issues.service.GitHubIssueFetcherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -23,11 +22,11 @@ public class LocalIssueStoreLoader {
 
     private final LocalIssueStoreUpdater localIssueStoreUpdater;
 
-    private final GitHub gitHub;
+    private final GitHubIssueFetcherService issueFetcherService;
 
-    public LocalIssueStoreLoader(LocalIssueStoreUpdater localIssueStoreUpdater, GitHub gitHub) {
+    public LocalIssueStoreLoader(LocalIssueStoreUpdater localIssueStoreUpdater, GitHubIssueFetcherService issueFetcherService) {
         this.localIssueStoreUpdater = localIssueStoreUpdater;
-        this.gitHub = gitHub;
+        this.issueFetcherService = issueFetcherService;
     }
 
     /**
@@ -47,12 +46,12 @@ public class LocalIssueStoreLoader {
         Objects.requireNonNull(repoCoords);
 
         // Retrieve the issues from GitHub
-        var gitHubRepo = gitHub.getRepository(repoCoords.getFullName());
-
         logger.info("{} Retrieving issues from GitHub repository: {}", repoCoords, repoCoords);
-        var allIssues = gitHubRepo.getIssues(GHIssueState.ALL);
-        logger.info("{} Retrieved {} issues from {}", repoCoords, allIssues.size(), repoCoords);
+        var issuesFlux = issueFetcherService.fetchAllIssues(repoCoords);
+        var issuesMono = issuesFlux.collectList();
+        var issues = issuesMono.block();
+        logger.info("{} Retrieved {} issues from {}", repoCoords, issues.size(), repoCoords);
 
-        localIssueStoreUpdater.replaceAll(repoCoords, allIssues);
+        localIssueStoreUpdater.replaceAll(repoCoords, issues);
     }
 }

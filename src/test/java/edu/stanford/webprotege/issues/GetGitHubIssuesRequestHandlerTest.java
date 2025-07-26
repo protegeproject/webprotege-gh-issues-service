@@ -6,7 +6,7 @@ import edu.stanford.protege.webprotege.common.ProjectId;
 import edu.stanford.protege.webprotege.ipc.ExecutionContext;
 import edu.stanford.protege.webprotege.ipc.WebProtegeHandler;
 import edu.stanford.webprotege.issues.handler.GetGitHubIssuesRequestHandler;
-import edu.stanford.webprotege.issues.service.GitHubIssuesService;
+import edu.stanford.webprotege.issues.service.EntityIssuesService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +27,7 @@ class GetGitHubIssuesRequestHandlerTest {
     private GetGitHubIssuesRequestHandler handler;
 
     @Mock
-    private GitHubIssuesService issuesManager;
+    private EntityIssuesService issuesManager;
 
     @Mock
     private ProjectId projectId;

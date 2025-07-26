@@ -1,7 +1,7 @@
 package edu.stanford.webprotege.issues.handler;
 
-import edu.stanford.webprotege.issues.persistence.GitHubRepositoryLinkRecord;
-import edu.stanford.webprotege.issues.persistence.GitHubRepositoryLinkRecordStore;
+import edu.stanford.webprotege.issues.persistence.IssuesSyncStateRecord;
+import edu.stanford.webprotege.issues.persistence.IssuesSyncStateRecordRepository;
 import edu.stanford.webprotege.issues.message.LinkedGitHubRepositoryChangedEvent;
 import edu.stanford.protege.webprotege.ipc.EventHandler;
 import edu.stanford.protege.webprotege.ipc.WebProtegeHandler;
@@ -14,9 +14,9 @@ public class LinkedGitHubRepositoryChangedEventHandler implements EventHandler<L
 
     private static final Logger logger = LoggerFactory.getLogger(LinkedGitHubRepositoryChangedEventHandler.class);
 
-    private final GitHubRepositoryLinkRecordStore store;
+    private final IssuesSyncStateRecordRepository store;
 
-    public LinkedGitHubRepositoryChangedEventHandler(GitHubRepositoryLinkRecordStore store) {
+    public LinkedGitHubRepositoryChangedEventHandler(IssuesSyncStateRecordRepository store) {
         this.store = store;
     }
 
@@ -43,7 +43,7 @@ public class LinkedGitHubRepositoryChangedEventHandler implements EventHandler<L
         var repoCoords = event.repositoryCoordinates();
 
         if (repoCoords != null) {
-            var linkRecord = GitHubRepositoryLinkRecord.of(
+            var linkRecord = IssuesSyncStateRecord.of(
                     event.projectId(),
                     repoCoords
             );

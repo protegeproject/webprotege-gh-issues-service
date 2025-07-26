@@ -6,7 +6,7 @@ PARSER_BEGIN(IssueTextParser)
 
 package edu.stanford.protege.issues.service;
 
-import parser.edu.stanford.webprotege.issues.service.IssueTextParserHandler;
+import edu.stanford.webprotege.issues.parser.IssueTextParserHandler;
 
 import java.io.*;
 import java.util.*;

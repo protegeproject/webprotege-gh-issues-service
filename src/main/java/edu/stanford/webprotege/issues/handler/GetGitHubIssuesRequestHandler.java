@@ -6,7 +6,7 @@ import edu.stanford.protege.webprotege.authorization.ActionId;
 import edu.stanford.protege.webprotege.ipc.CommandHandler;
 import edu.stanford.protege.webprotege.ipc.ExecutionContext;
 import edu.stanford.protege.webprotege.ipc.WebProtegeHandler;
-import edu.stanford.webprotege.issues.service.GitHubIssuesService;
+import edu.stanford.webprotege.issues.service.EntityIssuesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
@@ -25,9 +25,9 @@ public class GetGitHubIssuesRequestHandler implements CommandHandler<GetGitHubIs
 
     public static final ActionId ACTION_ID = ActionId.valueOf("GetGitHubIssues");
 
-    private final GitHubIssuesService issuesManager;
+    private final EntityIssuesService issuesManager;
 
-    public GetGitHubIssuesRequestHandler(GitHubIssuesService issuesManager) {
+    public GetGitHubIssuesRequestHandler(EntityIssuesService issuesManager) {
         this.issuesManager = issuesManager;
     }
 //

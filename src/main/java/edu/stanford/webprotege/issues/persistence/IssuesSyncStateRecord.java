@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.stanford.protege.github.GitHubRepositoryCoordinates;
 import edu.stanford.protege.webprotege.common.ProjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,11 +20,12 @@ import java.util.Objects;
  * This record stores information about the link, including the project ID,
  * GitHub repository coordinates
  */
-public record GitHubRepositoryLinkRecord(
+@Document(collection = "IssuesSyncState")
+public record IssuesSyncStateRecord(
         @Id @JsonProperty("projectId") @Nonnull ProjectId projectId,
         @JsonProperty("repoCoords") @Nonnull GitHubRepositoryCoordinates repoCoords,
         @JsonProperty("updatedAt") @Nullable Instant updatedAt,
-        @JsonProperty("updateRequired") boolean updateRequired) {
+        @JsonProperty("syncState") IssuesSyncState syncState) {
 
     /**
      * Constructs a new GitHubLinkRecord.
@@ -31,22 +33,22 @@ public record GitHubRepositoryLinkRecord(
      * @param projectId The project ID.
      * @param repoCoords The GitHub repository coordinates.
      * @param updatedAt The last update timestamp, or null if not available.
-     * @param updateRequired Indicates whether an update is required.
+     * @param syncState Indicates the sync state of the issues
      */
     @JsonCreator
-    public GitHubRepositoryLinkRecord(
+    public IssuesSyncStateRecord(
             @JsonProperty("projectId")
             @Nonnull ProjectId projectId,
             @JsonProperty("repoCoords")
             @Nonnull GitHubRepositoryCoordinates repoCoords,
             @JsonProperty("updatedAt")
             @Nullable Instant updatedAt,
-            @JsonProperty("updateRequired")
-            boolean updateRequired) {
+            @JsonProperty("syncState")
+            IssuesSyncState syncState) {
         this.projectId = Objects.requireNonNull(projectId);
         this.repoCoords = Objects.requireNonNull(repoCoords);
         this.updatedAt = Objects.requireNonNullElse(updatedAt, Instant.EPOCH);
-        this.updateRequired = updateRequired;
+        this.syncState = syncState;
     }
 
     /**
@@ -57,33 +59,21 @@ public record GitHubRepositoryLinkRecord(
      * @return A new GitHubLinkRecord with default values and the given project ID and repository coordinates.
      */
     @Nonnull
-    public static GitHubRepositoryLinkRecord of(@Nonnull ProjectId projectId, @Nonnull GitHubRepositoryCoordinates repoCoords) {
-        return new GitHubRepositoryLinkRecord(projectId, repoCoords, null, true);
+    public static IssuesSyncStateRecord of(@Nonnull ProjectId projectId, @Nonnull GitHubRepositoryCoordinates repoCoords) {
+        return new IssuesSyncStateRecord(projectId, repoCoords, null, IssuesSyncState.NOT_SYNCED);
     }
 
     /**
      * Create a new GitHubLinkRecord with updated status information.
      *
-     * @param updatedAt The updated timestamp.
-     * @param updateRequired Indicates whether an update is required.
+     * @param syncState The sync state for the issues
      * @return A new GitHubLinkRecord with the same project ID and repository coordinates but with updated status.
      */
     @Nonnull
-    public GitHubRepositoryLinkRecord withUpdatedStatus(@Nonnull Instant updatedAt, boolean updateRequired) {
-        return new GitHubRepositoryLinkRecord(this.projectId, this.repoCoords, updatedAt, updateRequired);
+    public IssuesSyncStateRecord withSyncState(IssuesSyncState syncState) {
+        return new IssuesSyncStateRecord(this.projectId, this.repoCoords, updatedAt, syncState);
     }
 
-    /**
-     * Create a new GitHubLinkRecord with updated "updateRequired" status.
-     *
-     * @param updateRequired Indicates whether an update is required.
-     * @return A new GitHubLinkRecord with the same project ID, repository coordinates, and last update timestamp,
-     * but with the updated "updateRequired" status.
-     */
-    @Nonnull
-    public GitHubRepositoryLinkRecord withUpdateRequired(boolean updateRequired) {
-        return new GitHubRepositoryLinkRecord(this.projectId, this.repoCoords, this.updatedAt, updateRequired);
-    }
 
     /**
      * Create a new GitHubLinkRecord with a failed update message.
@@ -93,7 +83,7 @@ public record GitHubRepositoryLinkRecord(
      * @param message The message indicating the reason for the failed update.
      * @return The current GitHubLinkRecord without any modifications.
      */
-    public GitHubRepositoryLinkRecord withUpdateFailed(String message) {
+    public IssuesSyncStateRecord withUpdateFailed(String message) {
         return this;
     }
 }

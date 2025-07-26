@@ -30,26 +30,26 @@ import java.util.stream.Stream;
  * @since 2023-09-15
  */
 @Service
-public class GitHubIssuesService {
+public class EntityIssuesService {
 
-    private static final Logger logger = LoggerFactory.getLogger(GitHubIssuesService.class);
+    private static final Logger logger = LoggerFactory.getLogger(EntityIssuesService.class);
 
     private final LocalIssueStoreManager localIssueStoreManager;
 
     private final LocalIssueStore localIssueStore;
 
-    private final GitHubRepositoryLinkRecordStore linkRecordRepository;
+    private final IssuesSyncStateRecordRepository linkRecordRepository;
 
     /**
-     * Constructs a new {@link GitHubIssuesService}.
+     * Constructs a new {@link EntityIssuesService}.
      *
      * @param localIssueStoreManager The manager responsible for ensuring the local store is in sync with GitHub.
      * @param localIssueStore        The local issue store to query.
      * @param linkRecordRepository   The repository that stores GitHub repository links for projects.
      */
-    public GitHubIssuesService(LocalIssueStoreManager localIssueStoreManager,
+    public EntityIssuesService(LocalIssueStoreManager localIssueStoreManager,
                                LocalIssueStore localIssueStore,
-                               GitHubRepositoryLinkRecordStore linkRecordRepository) {
+                               IssuesSyncStateRecordRepository linkRecordRepository) {
         this.localIssueStoreManager = localIssueStoreManager;
         this.localIssueStore = localIssueStore;
         this.linkRecordRepository = linkRecordRepository;
@@ -72,7 +72,7 @@ public class GitHubIssuesService {
 
         // Attempt to retrieve the GitHub repository link for the given project
         return linkRecordRepository.findById(projectId)
-                .map(GitHubRepositoryLinkRecord::repoCoords)
+                .map(IssuesSyncStateRecord::repoCoords)
                 .map(repoCoord -> {
                     // Retrieve issues linked directly by IRI
                     var byIris = localIssueStore.findAllByRepoCoordsAndIris(repoCoord, Iri.valueOf(entity))

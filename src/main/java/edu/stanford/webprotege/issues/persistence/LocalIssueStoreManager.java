@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Objects;
 
 /**
@@ -21,36 +20,32 @@ public class LocalIssueStoreManager {
 
     private static final Logger logger = LoggerFactory.getLogger(LocalIssueStoreManager.class);
 
-    private final GitHubRepositoryLinkRecordStore linkRepository;
+    private final IssuesSyncStateRecordRepository syncStateRepo;
 
     private final LocalIssueStoreLoader localIssueStoreLoader;
 
-    public LocalIssueStoreManager(GitHubRepositoryLinkRecordStore linkRepository,
+    public LocalIssueStoreManager(IssuesSyncStateRecordRepository syncStateRepo,
                                   LocalIssueStoreLoader localIssueStoreLoader) {
-        this.linkRepository = linkRepository;
+        this.syncStateRepo = syncStateRepo;
         this.localIssueStoreLoader = localIssueStoreLoader;
     }
 
     public synchronized void linkProjectToGitHubRepo(@Nonnull ProjectId projectId, @Nonnull GitHubRepositoryCoordinates repoCoords) {
-        var existingLink = linkRepository.findById(projectId);
+        var existingLink = syncStateRepo.findById(projectId);
         if(existingLink.isEmpty()) {
-            linkRepository.save(GitHubRepositoryLinkRecord.of(projectId, repoCoords));
+            syncStateRepo.save(IssuesSyncStateRecord.of(projectId, repoCoords));
         }
     }
 
-    public synchronized void unlinkProjectFromGitHubRepo(@Nonnull ProjectId projectId) {
-        this.linkRepository.deleteById(projectId);
-    }
-
     public synchronized void invalidateLocalIssueStore(@Nonnull ProjectId projectId) {
-        linkRepository.findById(projectId)
-                      .map(record -> record.withUpdateRequired(true))
-                      .ifPresent(linkRepository::save);
+        syncStateRepo.findById(projectId)
+                      .map(record -> record.withSyncState(IssuesSyncState.NOT_SYNCED))
+                      .ifPresent(syncStateRepo::save);
     }
 
     public synchronized void ensureLocalStoreIsUpToDate(@Nonnull ProjectId projectId) {
         Objects.requireNonNull(projectId);
-        var record = linkRepository.findById(projectId);
+        var record = syncStateRepo.findById(projectId);
         record.ifPresentOrElse(r -> {
                                    logger.info("Found linked GitHub repo for {}.  Details {}", projectId, r);
                                },
@@ -59,15 +54,17 @@ public class LocalIssueStoreManager {
                                });
         if(record.isPresent()) {
             var theRecord = record.get();
-            if (theRecord.updateRequired()) {
+            if (theRecord.syncState().equals(IssuesSyncState.NOT_SYNCED)) {
                 try {
+                    var replacementRecord = theRecord.withSyncState(IssuesSyncState.SYNCING);
+                    syncStateRepo.save(replacementRecord);
                     localIssueStoreLoader.load(theRecord.repoCoords());
-                    var replacementRecord = theRecord.withUpdatedStatus(Instant.now(), false);
-                    linkRepository.save(replacementRecord);
+                    var syncedRecord = theRecord.withSyncState(IssuesSyncState.SYNCED);
+                    syncStateRepo.save(syncedRecord);
                 } catch (IOException e) {
                     logger.error("Unable to update repository", e);
                     var updateFailed = theRecord.withUpdateFailed(e.getMessage());
-                    linkRepository.save(updateFailed);
+                    syncStateRepo.save(updateFailed);
                 }
             }
         }
